@@ -1,0 +1,21 @@
+{
+  "arm": "video",
+  "rounds": 1,
+  "masses": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "seed_controller": "runs/w3_test/seed_controller.py",
+  "seed": 0,
+  "stub": true,
+  "run_dir": "runs/w3_video",
+  "workers": 8,
+  "no_assist": false,
+  "render_timeout": 900
+}

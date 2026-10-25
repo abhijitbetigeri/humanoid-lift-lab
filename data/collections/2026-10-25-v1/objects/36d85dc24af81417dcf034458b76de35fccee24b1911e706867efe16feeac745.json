@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 40.0,
+  "box_rise_m": 0.0949,
+  "held_s": 0.0,
+  "max_assist_n": 1129.17,
+  "mean_assist_n": 218.04,
+  "peak_tau_frac": 1.0,
+  "max_slip_m": 1.7964,
+  "fell": true,
+  "dropped": false,
+  "fail_reason": "physics: simulation became unstable (contact explosion)"
+}

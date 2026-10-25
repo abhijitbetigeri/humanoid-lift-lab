@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 25,
+  "box_rise_m": 0.2,
+  "held_s": 0.0,
+  "max_assist_n": 50.0,
+  "mean_assist_n": 35.0,
+  "peak_tau_frac": 0.6,
+  "max_slip_m": 0.003,
+  "fell": false,
+  "dropped": false,
+  "fail_reason": "controller_error: AttributeError: 'FakeRobot' object has no attribute 'world_to_pelvis_frame'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_1/controller.py\", line 75, in run\n    box_in_pelvis = robot.world_to_pelvis_frame(box_pos_crouch)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'FakeRobot' object has no attribute 'world_to_pelvis_frame'\n"
+}

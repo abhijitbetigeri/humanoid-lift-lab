@@ -1,0 +1,842 @@
+[
+  {
+    "success": false,
+    "mass_kg": 5,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 20.0,
+    "mean_assist_n": 20.0,
+    "peak_tau_frac": 0.21,
+    "max_slip_m": 0.0,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 0.21,
+          "at": "0:01.0",
+          "s_above_0.9": 0.0
+        },
+        "hip_roll_yaw": {
+          "peak": 0.21,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "knee": {
+          "peak": 0.21,
+          "at": "0:00.6",
+          "s_above_0.9": 0.0
+        },
+        "ankle": {
+          "peak": 0.21,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "waist/back": {
+          "peak": 0.21,
+          "at": "0:00.4",
+          "s_above_0.9": 0.0
+        },
+        "shoulder": {
+          "peak": 0.21,
+          "at": "0:00.6",
+          "s_above_0.9": 0.0
+        },
+        "elbow": {
+          "peak": 0.21,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "wrist": {
+          "peak": 0.21,
+          "at": "0:00.1",
+          "s_above_0.9": 0.0
+        },
+        "hand": {
+          "peak": 0.21,
+          "at": "0:00.0",
+          "s_above_0.9": 0.0
+        }
+      },
+      "com_margin": {
+        "min_m": 0.031,
+        "at": "0:00.5",
+        "s_outside": 0.0
+      },
+      "slip": {
+        "max_m": 0.0,
+        "at": "0:00.0"
+      },
+      "assist": {
+        "mean_n": 20.0,
+        "max_n": 20.0,
+        "at": "0:00.0",
+        "s_above_50n": 0.0
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "0.21",
+          "0.000",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "0.21",
+          "0.000",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 10,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 20.0,
+    "mean_assist_n": 20.0,
+    "peak_tau_frac": 0.43,
+    "max_slip_m": 0.0,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 0.42,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "hip_roll_yaw": {
+          "peak": 0.42,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "knee": {
+          "peak": 0.42,
+          "at": "0:00.7",
+          "s_above_0.9": 0.0
+        },
+        "ankle": {
+          "peak": 0.43,
+          "at": "0:00.6",
+          "s_above_0.9": 0.0
+        },
+        "waist/back": {
+          "peak": 0.43,
+          "at": "0:00.2",
+          "s_above_0.9": 0.0
+        },
+        "shoulder": {
+          "peak": 0.43,
+          "at": "0:00.8",
+          "s_above_0.9": 0.0
+        },
+        "elbow": {
+          "peak": 0.42,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "wrist": {
+          "peak": 0.43,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "hand": {
+          "peak": 0.43,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        }
+      },
+      "com_margin": {
+        "min_m": 0.003,
+        "at": "0:00.5",
+        "s_outside": 0.0
+      },
+      "slip": {
+        "max_m": 0.0,
+        "at": "0:00.0"
+      },
+      "assist": {
+        "mean_n": 20.0,
+        "max_n": 20.0,
+        "at": "0:00.0",
+        "s_above_50n": 0.0
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.059",
+          "20",
+          "0.42",
+          "0.000",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "0.41",
+          "0.000",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 15,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 60.7,
+    "mean_assist_n": 40.4,
+    "peak_tau_frac": 0.64,
+    "max_slip_m": 0.003,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 0.64,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "hip_roll_yaw": {
+          "peak": 0.64,
+          "at": "0:00.6",
+          "s_above_0.9": 0.0
+        },
+        "knee": {
+          "peak": 0.64,
+          "at": "0:00.2",
+          "s_above_0.9": 0.0
+        },
+        "ankle": {
+          "peak": 0.64,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "waist/back": {
+          "peak": 0.64,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "shoulder": {
+          "peak": 0.64,
+          "at": "0:00.6",
+          "s_above_0.9": 0.0
+        },
+        "elbow": {
+          "peak": 0.64,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "wrist": {
+          "peak": 0.64,
+          "at": "0:00.8",
+          "s_above_0.9": 0.0
+        },
+        "hand": {
+          "peak": 0.64,
+          "at": "0:00.8",
+          "s_above_0.9": 0.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.026,
+        "at": "0:00.5",
+        "s_outside": 0.4
+      },
+      "slip": {
+        "max_m": 0.003,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 40.4,
+        "max_n": 60.7,
+        "at": "0:00.5",
+        "s_above_50n": 0.4
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.059",
+          "20",
+          "0.63",
+          "0.000",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "0.64",
+          "0.003",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 20,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 114.3,
+    "mean_assist_n": 67.1,
+    "peak_tau_frac": 0.86,
+    "max_slip_m": 0.008,
+    "fell": true,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 0.83,
+          "at": "0:01.0",
+          "s_above_0.9": 0.0
+        },
+        "hip_roll_yaw": {
+          "peak": 0.86,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "knee": {
+          "peak": 0.84,
+          "at": "0:01.0",
+          "s_above_0.9": 0.0
+        },
+        "ankle": {
+          "peak": 0.84,
+          "at": "0:00.3",
+          "s_above_0.9": 0.0
+        },
+        "waist/back": {
+          "peak": 0.86,
+          "at": "0:00.5",
+          "s_above_0.9": 0.0
+        },
+        "shoulder": {
+          "peak": 0.86,
+          "at": "0:00.4",
+          "s_above_0.9": 0.0
+        },
+        "elbow": {
+          "peak": 0.85,
+          "at": "0:00.7",
+          "s_above_0.9": 0.0
+        },
+        "wrist": {
+          "peak": 0.85,
+          "at": "0:00.9",
+          "s_above_0.9": 0.0
+        },
+        "hand": {
+          "peak": 0.86,
+          "at": "0:00.1",
+          "s_above_0.9": 0.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.054,
+        "at": "0:00.5",
+        "s_outside": 0.5
+      },
+      "slip": {
+        "max_m": 0.008,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 67.1,
+        "max_n": 114.3,
+        "at": "0:00.5",
+        "s_above_50n": 0.6
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.059",
+          "21",
+          "0.84",
+          "0.000",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "0.84",
+          "0.008",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 25,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 167.9,
+    "mean_assist_n": 93.9,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.013,
+    "fell": true,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.5
+        },
+        "hip_roll_yaw": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.7
+        },
+        "knee": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.5
+        },
+        "ankle": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.7
+        },
+        "waist/back": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.5
+        },
+        "shoulder": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.7
+        },
+        "elbow": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.4
+        },
+        "wrist": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.9
+        },
+        "hand": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.083,
+        "at": "0:00.5",
+        "s_outside": 0.6
+      },
+      "slip": {
+        "max_m": 0.013,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 93.9,
+        "max_n": 167.9,
+        "at": "0:00.5",
+        "s_above_50n": 0.7
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.058",
+          "22",
+          "1.00",
+          "0.000",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "1.00",
+          "0.013",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 30,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 200.0,
+    "mean_assist_n": 110.0,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.017,
+    "fell": true,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.6
+        },
+        "hip_roll_yaw": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.9
+        },
+        "knee": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.5
+        },
+        "ankle": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.7
+        },
+        "waist/back": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.7
+        },
+        "shoulder": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.8
+        },
+        "elbow": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.5
+        },
+        "wrist": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.9
+        },
+        "hand": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.1,
+        "at": "0:00.5",
+        "s_outside": 0.6
+      },
+      "slip": {
+        "max_m": 0.017,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 110.0,
+        "max_n": 200.0,
+        "at": "0:00.5",
+        "s_above_50n": 0.7
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.058",
+          "22",
+          "1.00",
+          "0.001",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "1.00",
+          "0.017",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 35,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 200.0,
+    "mean_assist_n": 110.0,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.017,
+    "fell": true,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.6
+        },
+        "hip_roll_yaw": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.9
+        },
+        "knee": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.5
+        },
+        "ankle": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.9
+        },
+        "waist/back": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.8
+        },
+        "shoulder": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        },
+        "elbow": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.6
+        },
+        "wrist": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        },
+        "hand": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.1,
+        "at": "0:00.5",
+        "s_outside": 0.6
+      },
+      "slip": {
+        "max_m": 0.017,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 110.0,
+        "max_n": 200.0,
+        "at": "0:00.5",
+        "s_above_50n": 0.7
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.058",
+          "22",
+          "1.00",
+          "0.001",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "1.00",
+          "0.017",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "success": false,
+    "mass_kg": 40,
+    "box_rise_m": 0.2,
+    "held_s": 0.0,
+    "max_assist_n": 200.0,
+    "mean_assist_n": 110.0,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.017,
+    "fell": true,
+    "dropped": false,
+    "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_text/round_0/controller.py\", line 45, in run\n    robot.squat(depth_m=squat_depth, duration_s=squat_dur, torso_pitch=crouch_pitch)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n",
+    "telemetry": {
+      "duration_s": 1.0,
+      "peak_tau_frac": {
+        "hip_pitch": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.6
+        },
+        "hip_roll_yaw": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.9
+        },
+        "knee": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.5
+        },
+        "ankle": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 0.8
+        },
+        "waist/back": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.7
+        },
+        "shoulder": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        },
+        "elbow": {
+          "peak": 1.0,
+          "at": "0:00.1",
+          "s_above_0.9": 0.4
+        },
+        "wrist": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        },
+        "hand": {
+          "peak": 1.0,
+          "at": "0:00.0",
+          "s_above_0.9": 1.0
+        }
+      },
+      "com_margin": {
+        "min_m": -0.1,
+        "at": "0:00.5",
+        "s_outside": 0.6
+      },
+      "slip": {
+        "max_m": 0.017,
+        "at": "0:01.0"
+      },
+      "assist": {
+        "mean_n": 110.0,
+        "max_n": 200.0,
+        "at": "0:00.5",
+        "s_above_50n": 0.7
+      },
+      "pelvis_z": {
+        "min_m": 0.55,
+        "at": "0:00.5"
+      },
+      "phases": [
+        "0:00.0-0:01.0 1_approach_squat"
+      ],
+      "timeline": [
+        [
+          "0:00.0",
+          "1_approach_squat",
+          "+0.058",
+          "22",
+          "1.00",
+          "0.001",
+          ""
+        ],
+        [
+          "0:01.0",
+          "1_approach_squat",
+          "+0.060",
+          "20",
+          "1.00",
+          "0.017",
+          ""
+        ]
+      ]
+    }
+  }
+]

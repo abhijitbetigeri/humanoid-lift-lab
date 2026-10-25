@@ -1,0 +1,15 @@
+{
+  "arm": "video",
+  "rounds": 0,
+  "masses": [
+    10,
+    30
+  ],
+  "seed_controller": "sim/reference_controller.py",
+  "seed": 0,
+  "stub": false,
+  "run_dir": "runs/w3_integ",
+  "workers": 8,
+  "no_assist": false,
+  "render_timeout": 900.0
+}

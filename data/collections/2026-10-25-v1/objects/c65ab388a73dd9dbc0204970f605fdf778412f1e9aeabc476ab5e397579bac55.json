@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 5.0,
+  "box_rise_m": 0.2869,
+  "held_s": 0.0,
+  "max_assist_n": 164.8,
+  "mean_assist_n": 37.43,
+  "peak_tau_frac": 1.0,
+  "max_slip_m": 0.7167,
+  "fell": false,
+  "dropped": true,
+  "fail_reason": "dropped the box (slipped out of the hands)"
+}

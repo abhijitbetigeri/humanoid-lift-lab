@@ -1,0 +1,10 @@
+.env
+.venv/
+runs/
+__pycache__/
+notes/
+PREP.md
+MUJOCO_LOG.TXT
+*.partial.mp4
+*.writing-*.mp4
+.DS_Store

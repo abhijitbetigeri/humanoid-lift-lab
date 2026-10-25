@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 30,
+  "box_rise_m": 0.2,
+  "held_s": 0.0,
+  "max_assist_n": 60.7,
+  "mean_assist_n": 40.4,
+  "peak_tau_frac": 0.64,
+  "max_slip_m": 0.027,
+  "fell": false,
+  "dropped": true,
+  "fail_reason": "stub: mass above capability"
+}

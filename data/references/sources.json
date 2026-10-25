@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "collected_on": "2026-10-25",
+  "purpose": "development reference context; never validated skills or held-out evidence",
+  "installed_mujoco_version": "3.17.0",
+  "retrieval_limitations": [
+    "Version-specific https://mujoco.readthedocs.io/en/3.17.0/modeling.html and XMLreference.html were inaccessible through the browser tool.",
+    "External content is paraphrased into short notes; full manuals/videos are not stored.",
+    "Local source is actively changing; hashes bind this collection, not historical runs."
+  ],
+  "external_sources": [
+    {
+      "source_id": "mujoco-computation",
+      "title": "MuJoCo contact computation",
+      "url": "https://mujoco.readthedocs.io/en/stable/computation/",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Live stable documentation; exact match to installed version unverified.",
+      "note": "Contacts are compliant; slip and solver artifacts require careful diagnosis."
+    },
+    {
+      "source_id": "mujoco-xml",
+      "title": "MuJoCo XML reference",
+      "url": "https://mujoco.readthedocs.io/en/stable/XMLreference.html",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Live stable documentation; exact match to installed version unverified.",
+      "note": "NoSlip is an additional friction-drift suppression pass; record solver settings."
+    },
+    {
+      "source_id": "mujoco-modeling",
+      "title": "MuJoCo modeling guide",
+      "url": "https://mujoco.readthedocs.io/en/stable/modeling.html",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Live stable documentation; exact match to installed version unverified.",
+      "note": "Inspect contact dimensionality, friction and priority in the actual model."
+    },
+    {
+      "source_id": "menagerie-g1",
+      "title": "Menagerie G1 README",
+      "url": "https://raw.githubusercontent.com/google-deepmind/mujoco_menagerie/main/unitree_g1/README.md",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Mutable main; no immutable upstream commit collected.",
+      "note": "Simplified Unitree-derived MJCF; position actuators need tuning; MJX validation is distinct."
+    },
+    {
+      "source_id": "menagerie-license",
+      "title": "Menagerie G1 license",
+      "url": "https://raw.githubusercontent.com/google-deepmind/mujoco_menagerie/main/unitree_g1/LICENSE",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Mutable main; model-level license retrieved.",
+      "note": "BSD-3-Clause; retain applicable notices when distributing the model."
+    },
+    {
+      "source_id": "unitree-g1",
+      "title": "Unitree G1 specifications",
+      "url": "https://www.unitree.com/g1/",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Live manufacturer page; configuration dependent.",
+      "note": "G1/G1 EDU arm-load values are about 2/3 kg; they do not describe our modified simulation."
+    },
+    {
+      "source_id": "aspire-method",
+      "title": "ASPIRE method and evaluation",
+      "url": "https://research.nvidia.com/labs/gear/aspire/",
+      "retrieved_on": "2026-10-25",
+      "status": "retrieved",
+      "version_note": "Live research project page; no reproduction claimed.",
+      "note": "Trace-based program repair, reusable skills, and disjoint debug/evaluation seeds."
+    }
+  ],
+  "local_sources": [
+    {
+      "path": "sim/humanoid_api.py",
+      "sha256": "2426c7aae25de5aa1fb00d2bad98f235035c90de34b83bd4c98daf77328af4b8",
+      "role": "local implementation/reference snapshot"
+    },
+    {
+      "path": "sim/trial.py",
+      "sha256": "c44ac6b7cb35169fd1355a8aeae8e57d1af5da0cdc94fd21aeedb4d119702a77",
+      "role": "local implementation/reference snapshot"
+    },
+    {
+      "path": "sim/g1/scene_lift.xml",
+      "sha256": "b14e44690646f342e0322124146cefa2d663a7318517367e7b43c2d18825644c",
+      "role": "local implementation/reference snapshot"
+    },
+    {
+      "path": "sim/g1/g1_with_hands.xml",
+      "sha256": "9db69b6cbe488fbb19bb800acc38ebaf29f1ee8b98f9cd45b7b35969dfddc11d",
+      "role": "local implementation/reference snapshot"
+    },
+    {
+      "path": "loop/prompts.py",
+      "sha256": "b3c1b2359da26b9bdb643cc06087d28dd776eec8dd89daa5cab5e2032afb8919",
+      "role": "local implementation/reference snapshot"
+    },
+    {
+      "path": "docs/calibration.md",
+      "sha256": "d63364fa194a0f3da2c804d3075ef76c9f6b540f346213fbd88711821b35db16",
+      "role": "local implementation/reference snapshot"
+    }
+  ],
+  "pack": {
+    "path": "data/references/argon-reference-pack.md",
+    "sha256": "9425f213d04038f99923bb27d53743af058595645048be6fdfd14d3c20d716d4"
+  },
+  "license_notes": "Only short original notes and references collected. G1 model declares BSD-3-Clause; other materials retain their own terms. No whole external dataset redistributed."
+}

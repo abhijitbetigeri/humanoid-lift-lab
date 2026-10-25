@@ -1,0 +1,103 @@
+--- runs/w3_video/round_0/controller.py
++++ runs/w3_video/round_1/controller.py
+@@ -1,14 +1,93 @@
+ import math
+ 
++
++def clamp(val, lo, hi):
++    return max(lo, min(hi, val))
++
++
+ def run(robot):
+-    m = robot.box_mass_kg
++    m = float(robot.box_mass_kg)
++    g = 9.81
++    mu = 0.60
++
++    # Mass fraction normalized from 5 kg to 40 kg: [0.0, 1.0]
++    alpha = clamp((m - 5.0) / 35.0, 0.0, 1.0)
++
++    # Read box geometry and initial world pose
++    box_pos, _ = robot.box_pose()
++    bx_w, by_w, bz_w = box_pos[0], box_pos[1], box_pos[2]
++    box_sx, box_sy, box_sz = robot.box_size[0], robot.box_size[1], robot.box_size[2]
++
++    # 1. APPROACH: Squat down with knees flexed and torso near upright
+     robot.phase("approach")
+-    robot.squat(0.25, 2.0)
+-    robot.hands_to((0.35, 0.2, -0.2), (0.35, -0.2, -0.2), 1.5)
++    squat_depth = 0.26 + 0.08 * alpha  # 0.26 m at 5 kg -> 0.34 m at 40 kg
++    approach_dur = 1.6 + 0.8 * alpha   # 1.6 s -> 2.4 s
++    # Slight forward pitch only during deep squat to keep CoM balanced before loading
++    robot.squat(squat_depth, duration_s=approach_dur, torso_pitch=0.05 * alpha)
++
++    # Compute box centre in the current pelvis frame
++    box_in_pelvis = robot.world_to_pelvis_frame((bx_w, by_w, bz_w))
++    px_box = clamp(box_in_pelvis[0], 0.22, 0.36)
++    pz_box = clamp(box_in_pelvis[2], -0.26, -0.10)
++    half_y = clamp(0.5 * box_sy, 0.14, 0.22)
++
++    # Pre-grasp slightly wider, then close onto box sides
++    reach_dur = 1.0 + 0.4 * alpha
++    robot.hands_to(
++        (px_box, half_y + 0.03, pz_box),
++        (px_box, -(half_y + 0.03), pz_box),
++        duration_s=reach_dur * 0.6,
++    )
++    robot.hands_to(
++        (px_box, half_y - 0.005, pz_box),
++        (px_box, -(half_y - 0.005), pz_box),
++        duration_s=reach_dur * 0.4,
++    )
++
++    # 2. GRIP: Apply normal force with safety factor accounting for lift acceleration
+     robot.phase("grip")
+-    robot.squeeze(1.8 * m * 9.81 / (2 * 0.6))
+-    robot.wait(0.5)
++    lift_dur = 2.6 + 2.2 * alpha  # 2.6 s at 5 kg -> 4.8 s at 40 kg
++    # Peak min-jerk upward acceleration estimate: a_peak ≈ 5.77 * dz / T^2
++    dz_total = 0.56
++    a_peak = 5.77 * dz_total / (lift_dur * lift_dur)
++    safety_factor = 2.2 + 0.5 * alpha  # 2.2x at 5 kg -> 2.7x at 40 kg
++    grip_force = safety_factor * m * (g + a_peak) / (2.0 * mu)
++    robot.squeeze(grip_force)
++    robot.wait(0.35 + 0.15 * alpha)
++
++    # 3. LIFT: Stage 1 - Pull box close to torso & break ground contact while extending legs halfway
+     robot.phase("lift")
+-    robot.squat(0.0, 3.0)
++    # Retract x as close to the pelvis/chest as geometry allows to minimize forward CoM shift & lever arm
++    x_retract = clamp(0.24 - 0.06 * alpha, 0.17, 0.24)
++    z_mid = pz_box + 0.16
++    z_top = 0.12 + 0.04 * alpha
++
++    # Counter-lean torso slightly backward for heavier masses to keep combined CoM inside feet
++    counter_pitch = -0.10 * alpha
++
++    stage1_dur = 0.45 * lift_dur
++    stage2_dur = 0.55 * lift_dur
++
++    # Retract load inward and slightly up first so CoM moves inside the support polygon before peak lift
++    robot.hands_to(
++        (x_retract, half_y - 0.01, z_mid),
++        (x_retract, -(half_y - 0.01), z_mid),
++        duration_s=0.35 * stage1_dur,
++    )
++    robot.squat(
++        0.45 * squat_depth,
++        duration_s=0.65 * stage1_dur,
++        torso_pitch=counter_pitch,
++    )
++
++    # Stage 2 - Full stand up and raise arms to ensure box rise > 0.50 m
++    robot.squat(0.0, duration_s=stage2_dur, torso_pitch=counter_pitch)
++    robot.hands_to(
++        (x_retract, half_y - 0.01, z_top),
++        (x_retract, -(half_y - 0.01), z_top),
++        duration_s=0.8 + 0.4 * alpha,
++    )
++
++    # 4. HOLD: Maintain steady upright posture for > 3.5 s
+     robot.phase("hold")
+-    robot.wait(3.5)
++    robot.wait(3.8)

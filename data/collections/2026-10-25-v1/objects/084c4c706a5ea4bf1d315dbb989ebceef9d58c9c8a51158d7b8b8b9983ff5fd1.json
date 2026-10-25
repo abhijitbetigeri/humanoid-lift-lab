@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 10,
+  "box_rise_m": 0.2,
+  "held_s": 0.0,
+  "max_assist_n": 20.0,
+  "mean_assist_n": 20.0,
+  "peak_tau_frac": 0.3,
+  "max_slip_m": 0.0,
+  "fell": false,
+  "dropped": false,
+  "fail_reason": "controller_error: TypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\nTraceback (most recent call last):\n  File \"/Users/abhijitbetigeri/projects/gemini-argon-hack/loop/stubs.py\", line 70, in run_trial\n    ns[\"run\"](robot)\n    ~~~~~~~~~^^^^^^^\n  File \"runs/w3_video/round_1/controller.py\", line 26, in run\n    robot.squat(squat_depth, duration_s=approach_dur, torso_pitch=0.05 * alpha)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: FakeRobot.squat() got an unexpected keyword argument 'torso_pitch'\n"
+}

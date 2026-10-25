@@ -1,0 +1,317 @@
+{
+  "generated_at_utc": "2026-10-25T21:21:15.646886+00:00",
+  "runs_root": "/Users/abhijitbetigeri/projects/gemini-argon-hack/runs",
+  "scope": "Saved artifacts only; no live process, model, or simulator inspection. Files may change during scan.",
+  "runs": [
+    {
+      "run": "w1_baseline",
+      "backend": "unknown",
+      "config_sha256": null,
+      "environment_sha256": null,
+      "split": null,
+      "arm": null,
+      "initial_controller_sha256": null,
+      "conditions": {
+        "masses": null,
+        "seed": null,
+        "rounds": null,
+        "no_assist": null
+      },
+      "rounds": [],
+      "sweep_trial_count": 4,
+      "sweep_passes": 0,
+      "warnings": [
+        "missing or invalid run config",
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "saved sweep outcomes have no backend/config provenance; inspect as historical development only"
+      ]
+    },
+    {
+      "run": "w1_baseline_v2",
+      "backend": "unknown",
+      "config_sha256": null,
+      "environment_sha256": null,
+      "split": null,
+      "arm": null,
+      "initial_controller_sha256": null,
+      "conditions": {
+        "masses": null,
+        "seed": null,
+        "rounds": null,
+        "no_assist": null
+      },
+      "rounds": [],
+      "sweep_trial_count": 8,
+      "sweep_passes": 0,
+      "warnings": [
+        "missing or invalid run config",
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "saved sweep outcomes have no backend/config provenance; inspect as historical development only"
+      ]
+    },
+    {
+      "run": "w1_reference",
+      "backend": "unknown",
+      "config_sha256": null,
+      "environment_sha256": null,
+      "split": null,
+      "arm": null,
+      "initial_controller_sha256": null,
+      "conditions": {
+        "masses": null,
+        "seed": null,
+        "rounds": null,
+        "no_assist": null
+      },
+      "rounds": [],
+      "sweep_trial_count": 8,
+      "sweep_passes": 4,
+      "warnings": [
+        "missing or invalid run config",
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "saved sweep outcomes have no backend/config provenance; inspect as historical development only"
+      ]
+    },
+    {
+      "run": "w1_reference_v2",
+      "backend": "unknown",
+      "config_sha256": null,
+      "environment_sha256": null,
+      "split": null,
+      "arm": null,
+      "initial_controller_sha256": null,
+      "conditions": {
+        "masses": null,
+        "seed": null,
+        "rounds": null,
+        "no_assist": null
+      },
+      "rounds": [],
+      "sweep_trial_count": 8,
+      "sweep_passes": 4,
+      "warnings": [
+        "missing or invalid run config",
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "saved sweep outcomes have no backend/config provenance; inspect as historical development only"
+      ]
+    },
+    {
+      "run": "w3_integ",
+      "backend": "configured-real",
+      "config_sha256": "f7afa5607a00393a394a430810c207ad3e70a19dee2baf08fb883d6ca9a266c4",
+      "environment_sha256": null,
+      "split": null,
+      "arm": "video",
+      "initial_controller_sha256": "dd53794892599d6ca6106011e3c3a848032dd7a8a2c6fba4f88fac4e0ffbf7ca",
+      "conditions": {
+        "masses": [
+          10,
+          30
+        ],
+        "seed": 0,
+        "rounds": 0,
+        "no_assist": false
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "controller_sha256": "dd53794892599d6ca6106011e3c3a848032dd7a8a2c6fba4f88fac4e0ffbf7ca",
+          "trial_count": 2,
+          "passes": 0
+        }
+      ],
+      "sweep_trial_count": null,
+      "sweep_passes": null,
+      "warnings": [
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split"
+      ]
+    },
+    {
+      "run": "w3_test/dry",
+      "backend": "stub",
+      "config_sha256": "5a4998e235f34664eaaa1562e43f71e8824349eed4be6634f8baec23dfe0940e",
+      "environment_sha256": null,
+      "split": null,
+      "arm": "text",
+      "initial_controller_sha256": "68de5acdc23301e237f7338e812a392ea495af036bfabc3c956a654cf1a27cd6",
+      "conditions": {
+        "masses": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "seed": 0,
+        "rounds": 0,
+        "no_assist": false
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "controller_sha256": "68de5acdc23301e237f7338e812a392ea495af036bfabc3c956a654cf1a27cd6",
+          "trial_count": 8,
+          "passes": 5
+        }
+      ],
+      "sweep_trial_count": null,
+      "sweep_passes": null,
+      "warnings": [
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "stub outcomes are harness tests, not physics evidence"
+      ]
+    },
+    {
+      "run": "w3_text",
+      "backend": "stub",
+      "config_sha256": "df2ad25aff59d86774ae46f52201a7fad131d68b469e3dbb322c19c56ec1d908",
+      "environment_sha256": null,
+      "split": null,
+      "arm": "text",
+      "initial_controller_sha256": "4376f297d8bbe941293bae35f56ce9f312e4c2cdbc63701251dedf2f6ab27e4d",
+      "conditions": {
+        "masses": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "seed": 0,
+        "rounds": 1,
+        "no_assist": false
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "controller_sha256": "4376f297d8bbe941293bae35f56ce9f312e4c2cdbc63701251dedf2f6ab27e4d",
+          "trial_count": 8,
+          "passes": 0
+        },
+        {
+          "round": 1,
+          "controller_sha256": "f011112c22e5c73388a8b3e6fe84a1ee264b73f6c64705cf18f838bfc2b7d39b",
+          "trial_count": 8,
+          "passes": 0
+        }
+      ],
+      "sweep_trial_count": null,
+      "sweep_passes": null,
+      "warnings": [
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "stub outcomes are harness tests, not physics evidence"
+      ]
+    },
+    {
+      "run": "w3_video",
+      "backend": "stub",
+      "config_sha256": "24536e30a1dcb091cea242bb36d2a7e717a0d3c5b7d74a981942be9a8b07f362",
+      "environment_sha256": null,
+      "split": null,
+      "arm": "video",
+      "initial_controller_sha256": "68de5acdc23301e237f7338e812a392ea495af036bfabc3c956a654cf1a27cd6",
+      "conditions": {
+        "masses": [
+          5,
+          10,
+          15,
+          20,
+          25,
+          30,
+          35,
+          40
+        ],
+        "seed": 0,
+        "rounds": 1,
+        "no_assist": false
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "controller_sha256": "68de5acdc23301e237f7338e812a392ea495af036bfabc3c956a654cf1a27cd6",
+          "trial_count": 8,
+          "passes": 5
+        },
+        {
+          "round": 1,
+          "controller_sha256": "ff43c9d221fce5516b63d4ffc90bed8db4d46d2756167399b83e7c451381e40f",
+          "trial_count": 8,
+          "passes": 0
+        }
+      ],
+      "sweep_trial_count": null,
+      "sweep_passes": null,
+      "warnings": [
+        "missing environment SHA256; historical physics cannot be bound to current source",
+        "missing or unrecognized split",
+        "stub outcomes are harness tests, not physics evidence"
+      ]
+    }
+  ],
+  "candidate_comparisons": [
+    {
+      "video": "w3_integ",
+      "text": "w3_test/dry",
+      "status": "blocked",
+      "blockers": [
+        "both runs must explicitly configure the real backend",
+        "starting controller mismatch",
+        "missing environment provenance",
+        "missing split provenance",
+        "masses mismatch"
+      ],
+      "limitations": "Does not verify model settings, prompt equality, seed isolation, video delivery, or causality."
+    },
+    {
+      "video": "w3_integ",
+      "text": "w3_text",
+      "status": "blocked",
+      "blockers": [
+        "both runs must explicitly configure the real backend",
+        "starting controller mismatch",
+        "missing environment provenance",
+        "missing split provenance",
+        "masses mismatch",
+        "rounds mismatch"
+      ],
+      "limitations": "Does not verify model settings, prompt equality, seed isolation, video delivery, or causality."
+    },
+    {
+      "video": "w3_video",
+      "text": "w3_test/dry",
+      "status": "blocked",
+      "blockers": [
+        "both runs must explicitly configure the real backend",
+        "missing environment provenance",
+        "missing split provenance",
+        "rounds mismatch"
+      ],
+      "limitations": "Does not verify model settings, prompt equality, seed isolation, video delivery, or causality."
+    },
+    {
+      "video": "w3_video",
+      "text": "w3_text",
+      "status": "blocked",
+      "blockers": [
+        "both runs must explicitly configure the real backend",
+        "starting controller mismatch",
+        "missing environment provenance",
+        "missing split provenance"
+      ],
+      "limitations": "Does not verify model settings, prompt equality, seed isolation, video delivery, or causality."
+    }
+  ]
+}

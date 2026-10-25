@@ -1,0 +1,20 @@
+{
+  "arm": "video",
+  "rounds": [
+    {
+      "round": 0,
+      "pass_rate": 0.0,
+      "passed": [],
+      "masses": [
+        10,
+        30
+      ],
+      "max_mass_passed": null,
+      "mean_assist_n": 61.8,
+      "argon_cost_usd": 0.0,
+      "wall_s": 634.5,
+      "videos": []
+    }
+  ],
+  "total_cost_usd": 0
+}

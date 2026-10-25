@@ -1,0 +1,80 @@
+[
+  {
+    "success": false,
+    "mass_kg": 5.0,
+    "box_rise_m": 0.2869,
+    "held_s": 0.0,
+    "max_assist_n": 164.8,
+    "mean_assist_n": 37.43,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.7167,
+    "fell": false,
+    "dropped": true,
+    "fail_reason": "dropped the box (slipped out of the hands)"
+  },
+  {
+    "success": true,
+    "mass_kg": 10.0,
+    "box_rise_m": 0.5566,
+    "held_s": 4.1,
+    "max_assist_n": 295.0,
+    "mean_assist_n": 19.1,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.1051,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": null
+  },
+  {
+    "success": true,
+    "mass_kg": 15.0,
+    "box_rise_m": 0.5594,
+    "held_s": 4.066,
+    "max_assist_n": 354.55,
+    "mean_assist_n": 26.08,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.101,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": null
+  },
+  {
+    "success": true,
+    "mass_kg": 20.0,
+    "box_rise_m": 0.5384,
+    "held_s": 4.0,
+    "max_assist_n": 458.47,
+    "mean_assist_n": 31.81,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.1073,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": null
+  },
+  {
+    "success": true,
+    "mass_kg": 25.0,
+    "box_rise_m": 0.5103,
+    "held_s": 3.8,
+    "max_assist_n": 416.08,
+    "mean_assist_n": 38.69,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.1337,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": null
+  },
+  {
+    "success": true,
+    "mass_kg": 30.0,
+    "box_rise_m": 0.4762,
+    "held_s": 3.6,
+    "max_assist_n": 456.22,
+    "mean_assist_n": 44.61,
+    "peak_tau_frac": 1.0,
+    "max_slip_m": 0.1322,
+    "fell": false,
+    "dropped": false,
+    "fail_reason": null
+  }
+]

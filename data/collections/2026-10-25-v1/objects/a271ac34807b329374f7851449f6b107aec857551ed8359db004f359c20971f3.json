@@ -1,0 +1,37 @@
+{
+  "arm": "text",
+  "rounds": [
+    {
+      "round": 0,
+      "pass_rate": 0.625,
+      "passed": [
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "masses": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40
+      ],
+      "max_mass_passed": 25,
+      "mean_assist_n": 33.5,
+      "argon_cost_usd": 0.0,
+      "wall_s": 76.6,
+      "videos": [
+        "round_0/videos/m25_grid.mp4",
+        "round_0/videos/m30_grid.mp4",
+        "round_0/videos/m35_grid.mp4",
+        "round_0/videos/m40_grid.mp4"
+      ]
+    }
+  ],
+  "total_cost_usd": 0
+}

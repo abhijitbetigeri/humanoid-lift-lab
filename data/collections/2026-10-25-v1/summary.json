@@ -1,0 +1,34 @@
+{
+  "generated_at_utc": "2026-10-25T21:37:19.113354+00:00",
+  "schema_version": 1,
+  "episode_count": 112,
+  "repair_count": 2,
+  "backend_counts": {
+    "configured-real": 18,
+    "unknown": 54,
+    "stub": 40
+  },
+  "split_counts": {
+    "unknown": 112
+  },
+  "outcome_tag_counts": {
+    "insufficient-rise": 31,
+    "physics-instability": 7,
+    "fell": 18,
+    "dropped": 14,
+    "recorded-success": 32,
+    "other-or-unknown-failure": 1,
+    "controller-error": 24
+  },
+  "development_candidate_count": 0,
+  "artifact_count": 367,
+  "warnings": [],
+  "api_call_log_entries": 7,
+  "memory_entries_created": 0,
+  "limitations": [
+    "Saved artifact inventory, not independent verification of physics.",
+    "Unknown provenance and seed fields are not inferred.",
+    "Large artifacts are hashed references, not copied snapshots.",
+    "Sources may change while collecting; this is not an atomic experiment snapshot."
+  ]
+}

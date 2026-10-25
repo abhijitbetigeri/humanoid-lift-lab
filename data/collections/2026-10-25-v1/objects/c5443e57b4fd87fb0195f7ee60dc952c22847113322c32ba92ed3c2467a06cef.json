@@ -1,0 +1,21 @@
+{
+  "arm": "video",
+  "rounds": 4,
+  "masses": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "seed_controller": "sim/baseline_controller.py",
+  "seed": 0,
+  "stub": false,
+  "run_dir": "runs/video",
+  "workers": 4,
+  "no_assist": false,
+  "render_timeout": 1800.0
+}

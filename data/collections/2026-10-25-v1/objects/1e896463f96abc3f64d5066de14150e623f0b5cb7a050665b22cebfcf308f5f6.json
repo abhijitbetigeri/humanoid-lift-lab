@@ -1,0 +1,57 @@
+{
+  "arm": "text",
+  "rounds": [
+    {
+      "round": 0,
+      "pass_rate": 0.0,
+      "passed": [],
+      "masses": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40
+      ],
+      "max_mass_passed": null,
+      "mean_assist_n": 71.4,
+      "argon_cost_usd": 0.04,
+      "wall_s": 160.7,
+      "critique_cost_usd": 0.0606,
+      "videos": [
+        "round_0/videos/m5_grid.mp4",
+        "round_0/videos/m10_grid.mp4",
+        "round_0/videos/m15_grid.mp4",
+        "round_0/videos/m40_grid.mp4"
+      ]
+    },
+    {
+      "round": 1,
+      "pass_rate": 0.0,
+      "passed": [],
+      "masses": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40
+      ],
+      "max_mass_passed": null,
+      "mean_assist_n": 38.8,
+      "argon_cost_usd": 0.0606,
+      "wall_s": 70.2,
+      "videos": [
+        "round_1/videos/m5_grid.mp4",
+        "round_1/videos/m10_grid.mp4",
+        "round_1/videos/m15_grid.mp4",
+        "round_1/videos/m40_grid.mp4"
+      ]
+    }
+  ],
+  "total_cost_usd": 0.1006
+}

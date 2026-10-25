@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 40.0,
+  "box_rise_m": 0.0073,
+  "held_s": 0.0,
+  "max_assist_n": 82.36,
+  "mean_assist_n": 14.21,
+  "peak_tau_frac": 1.0,
+  "max_slip_m": 0.0077,
+  "fell": false,
+  "dropped": false,
+  "fail_reason": "dropped the box: tote jammed against the legs (left_hip_yaw_link, left_knee_link, right_hip_yaw_link, right_knee_link) and was squeezed out of the hands"
+}

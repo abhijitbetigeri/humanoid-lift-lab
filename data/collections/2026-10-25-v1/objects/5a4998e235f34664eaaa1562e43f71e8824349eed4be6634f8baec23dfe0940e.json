@@ -1,0 +1,20 @@
+{
+  "arm": "text",
+  "rounds": 0,
+  "masses": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "seed_controller": "runs/w3_test/seed_controller.py",
+  "seed": 0,
+  "stub": true,
+  "run_dir": "runs/w3_test/dry",
+  "workers": 8,
+  "no_assist": false
+}

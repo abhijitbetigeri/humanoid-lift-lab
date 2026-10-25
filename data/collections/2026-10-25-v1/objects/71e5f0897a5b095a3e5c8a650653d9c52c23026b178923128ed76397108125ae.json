@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 5.0,
+  "box_rise_m": 0.0,
+  "held_s": 0.0,
+  "max_assist_n": 235.38,
+  "mean_assist_n": 45.81,
+  "peak_tau_frac": 0.361,
+  "max_slip_m": 0.9902,
+  "fell": false,
+  "dropped": false,
+  "fail_reason": "box rose only 0.00 m (< 0.45 m)"
+}

@@ -1,0 +1,20 @@
+{
+  "arm": "text",
+  "rounds": 1,
+  "masses": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "seed_controller": null,
+  "seed": 0,
+  "stub": true,
+  "run_dir": "runs/w3_text",
+  "workers": 8,
+  "no_assist": false
+}

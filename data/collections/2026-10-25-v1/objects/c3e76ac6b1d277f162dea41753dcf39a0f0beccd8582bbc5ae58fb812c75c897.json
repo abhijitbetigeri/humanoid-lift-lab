@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "mass_kg": 35.0,
+  "box_rise_m": 0.1691,
+  "held_s": 0.0,
+  "max_assist_n": 1942.3,
+  "mean_assist_n": 539.96,
+  "peak_tau_frac": 1.0,
+  "max_slip_m": 83.537,
+  "fell": true,
+  "dropped": true,
+  "fail_reason": "fell (pelvis below 0.45 m at t=7.2s)"
+}

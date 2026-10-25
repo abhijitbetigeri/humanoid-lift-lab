@@ -1,0 +1,2 @@
+{"kind": "upload", "n_videos": 4, "latency_s": 18.3, "bytes": 104797, "ts": 1792956949.6446579}
+{"kind": "critique_video", "ts": 1792956999.5781078, "interaction_id": "v1_ChdGbHJlYXZyQkZiVHdqckVQZ1pUWTJBNBIXRmxyZWF2ckJGYlR3anJFUGdaVFkyQTQ", "status": "completed", "latency_s": 49.9, "prompt_chars": 16559, "output_chars": 9416, "input_tokens": 13555, "cached_tokens": 0, "video_tokens": 5796, "output_tokens": 3349, "thought_tokens": 0, "est_cost_usd": 0.0606}
