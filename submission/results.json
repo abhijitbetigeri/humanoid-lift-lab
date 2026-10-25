@@ -1,0 +1,381 @@
+{
+  "scope": "Recorded development outcomes; not held-out tests or stock-G1 hardware claims.",
+  "conditions": {
+    "video_adapt": {
+      "starting_controller": "sim/reference_controller.py",
+      "masses_kg": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40
+      ],
+      "placement_schedule": "base seed 0 + index in masses_kg",
+      "split_metadata": null,
+      "environment_sha256": null,
+      "recorded_rounds": [
+        {
+          "round": 0,
+          "pass_rate": 0.875,
+          "passed": [
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0
+          ],
+          "mean_assist_n": 37.5,
+          "revised_from": 0
+        },
+        {
+          "round": 1,
+          "pass_rate": 0.0,
+          "passed": [],
+          "mean_assist_n": 75.9,
+          "revised_from": 0
+        },
+        {
+          "round": 2,
+          "pass_rate": 0.375,
+          "passed": [
+            5.0,
+            10.0,
+            15.0
+          ],
+          "mean_assist_n": 79.1,
+          "revised_from": 0
+        },
+        {
+          "round": 3,
+          "pass_rate": 0.75,
+          "passed": [
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            35.0
+          ],
+          "mean_assist_n": 42.7,
+          "revised_from": 0
+        },
+        {
+          "round": 4,
+          "pass_rate": 1.0,
+          "passed": [
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0
+          ],
+          "mean_assist_n": 34.3,
+          "revised_from": 4
+        }
+      ],
+      "final_trial_results": [
+        {
+          "success": true,
+          "mass_kg": 10.0,
+          "box_rise_m": 0.5626,
+          "held_s": 4.133,
+          "max_assist_n": 297.52,
+          "mean_assist_n": 18.95,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1053,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 15.0,
+          "box_rise_m": 0.5602,
+          "held_s": 4.1,
+          "max_assist_n": 370.73,
+          "mean_assist_n": 24.66,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1021,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 20.0,
+          "box_rise_m": 0.5652,
+          "held_s": 4.066,
+          "max_assist_n": 434.67,
+          "mean_assist_n": 32.4,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1057,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 25.0,
+          "box_rise_m": 0.5195,
+          "held_s": 3.8,
+          "max_assist_n": 476.72,
+          "mean_assist_n": 37.78,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1371,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 30.0,
+          "box_rise_m": 0.4791,
+          "held_s": 3.633,
+          "max_assist_n": 533.13,
+          "mean_assist_n": 41.52,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1316,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 35.0,
+          "box_rise_m": 0.4799,
+          "held_s": 3.633,
+          "max_assist_n": 575.81,
+          "mean_assist_n": 48.67,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.132,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 40.0,
+          "box_rise_m": 0.4738,
+          "held_s": 3.6,
+          "max_assist_n": 624.12,
+          "mean_assist_n": 57.57,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1301,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 5.0,
+          "box_rise_m": 0.6867,
+          "held_s": 4.966,
+          "max_assist_n": 163.21,
+          "mean_assist_n": 12.61,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1364,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        }
+      ],
+      "logged_api_cost_estimate_usd": 0.2557,
+      "controller_sha256": "6bd5b39ee3e23ae21953650eddddf249533064d7dd6ede25195ac2534904ba17",
+      "summary_sha256": "89616ef9157a71563e56a646b548e456a8d13ca41b1207b926988247d6fb3985"
+    },
+    "text_adapt": {
+      "starting_controller": "sim/reference_controller.py",
+      "masses_kg": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40
+      ],
+      "placement_schedule": "base seed 0 + index in masses_kg",
+      "split_metadata": null,
+      "environment_sha256": null,
+      "recorded_rounds": [
+        {
+          "round": 0,
+          "pass_rate": 0.875,
+          "passed": [
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0
+          ],
+          "mean_assist_n": 37.5,
+          "revised_from": 0
+        },
+        {
+          "round": 1,
+          "pass_rate": 0.0,
+          "passed": [],
+          "mean_assist_n": 166.6,
+          "revised_from": 0
+        },
+        {
+          "round": 2,
+          "pass_rate": 0.0,
+          "passed": [],
+          "mean_assist_n": 85.7,
+          "revised_from": 0
+        },
+        {
+          "round": 3,
+          "pass_rate": 0.75,
+          "passed": [
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0
+          ],
+          "mean_assist_n": 37.5,
+          "revised_from": 0
+        },
+        {
+          "round": 4,
+          "pass_rate": 1.0,
+          "passed": [
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0
+          ],
+          "mean_assist_n": 34.8,
+          "revised_from": 4
+        }
+      ],
+      "final_trial_results": [
+        {
+          "success": true,
+          "mass_kg": 10.0,
+          "box_rise_m": 0.4954,
+          "held_s": 4.1,
+          "max_assist_n": 267.71,
+          "mean_assist_n": 20.48,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1391,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 15.0,
+          "box_rise_m": 0.5876,
+          "held_s": 4.166,
+          "max_assist_n": 370.89,
+          "mean_assist_n": 24.99,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1079,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 20.0,
+          "box_rise_m": 0.5898,
+          "held_s": 4.133,
+          "max_assist_n": 434.61,
+          "mean_assist_n": 32.75,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1084,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 25.0,
+          "box_rise_m": 0.5519,
+          "held_s": 4.033,
+          "max_assist_n": 477.51,
+          "mean_assist_n": 37.73,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1068,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 30.0,
+          "box_rise_m": 0.4856,
+          "held_s": 3.766,
+          "max_assist_n": 539.94,
+          "mean_assist_n": 42.19,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1383,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 35.0,
+          "box_rise_m": 0.4884,
+          "held_s": 3.8,
+          "max_assist_n": 577.4,
+          "mean_assist_n": 49.12,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.1386,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 40.0,
+          "box_rise_m": 0.4844,
+          "held_s": 3.666,
+          "max_assist_n": 625.07,
+          "mean_assist_n": 58.32,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.139,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        },
+        {
+          "success": true,
+          "mass_kg": 5.0,
+          "box_rise_m": 0.6385,
+          "held_s": 4.7,
+          "max_assist_n": 163.14,
+          "mean_assist_n": 12.69,
+          "peak_tau_frac": 1.0,
+          "max_slip_m": 0.142,
+          "fell": false,
+          "dropped": false,
+          "fail_reason": null
+        }
+      ],
+      "logged_api_cost_estimate_usd": 0.1766,
+      "controller_sha256": "a626732c467b4630df18286bbcf7717fa01797263bd9c2a7c9808f9b2d83d83d",
+      "summary_sha256": "57b4cf21eea345446fe301325dc02b5cdf92b76023ad9b567fa13b4154b0cc48"
+    }
+  }
+}

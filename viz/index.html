@@ -77,10 +77,20 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
   <p class="lede">Humanoids that lift and shift: boxes, stock and furniture parts for small businesses and households, in tight,
     crowded spaces where getting people to help is hard. Every load is different, and nobody is on site to re-tune the robot.
     Gemini 4 Argon does that job in simulation: it takes the robot's deployed lift controller, runs it in MuJoCo on boxes from 11 to 88 lb,
-    watches the rendered video of each attempt, explains what went wrong and rewrites the controller until physics passes every load.
+    watches the rendered video of each attempt, explains what went wrong and rewrites the controller for physics to re-test.
     A hidden physics scorer grades every round; the critic never scores itself.</p>
-  <p class="lede">The point is to find and fix the failures in simulation first: a tipped robot or a dropped 60 lb box costs nothing in MuJoCo,
-    so a controller reaches the real robot, in a real shop or home, only after physics has shown it holds.</p>
+  <p class="lede">The goal is to find failures before hardware deployment. This prototype checks controller changes in a modified,
+    assisted humanoid simulation; hardware transfer and held-out evaluation remain future work.</p>
+  <section id="demo" aria-labelledby="demo-title" style="margin:24px 0">
+    <h2 id="demo-title" style="margin:0 0 10px">Watch the 1-minute demo</h2>
+    <video controls playsinline preload="metadata" poster="assets/demo-poster.png" style="display:block;width:100%;aspect-ratio:16/9;background:#151719;border-radius:10px" aria-label="60-second narrated Humanoid Lift Lab demo">
+      <source src="assets/humanoid-lift-lab-60s.mp4" type="video/mp4">
+      Your browser cannot play this video. <a href="assets/humanoid-lift-lab-60s.mp4">Open the MP4</a>.
+    </video>
+    <p class="note">60 seconds · narrated and captioned · actual app captures and recorded simulation replay.
+      <a href="assets/humanoid-lift-lab-60s.mp4" download>Download MP4</a> ·
+      <a href="https://github.com/abhijitbetigeri/humanoid-lift-lab">Source and evidence</a></p>
+  </section>
   <p class="note" id="gen"></p>
 
   <div class="tiles" id="tiles"></div>
