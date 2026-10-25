@@ -2,7 +2,7 @@
 
 Project: **Humanoid Lift Lab**
 
-Remaining required value: a publicly accessible demo URL. The MP4 is ready; the Render embed is being published.
+All five form values are filled below. The demo uses a direct hosted MP4; the form shows YouTube as an example, so verify that it accepts this host.
 
 ## Project Description
 
@@ -22,7 +22,7 @@ https://github.com/abhijitbetigeri/humanoid-lift-lab
 
 ## 1-Minute Demo Video
 
-**ADD THE VERIFIED HOSTED VIDEO URL HERE.**
+https://humanoid-lift-lab.onrender.com/assets/humanoid-lift-lab-60s.mp4
 
 Video file: `submission/humanoid-lift-lab-60s.mp4` (60.0 s, 1280x720, H.264/AAC, narrated and captioned).
 
