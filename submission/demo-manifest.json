@@ -1,0 +1,16 @@
+{
+  "output": "submission/humanoid-lift-lab-60s.mp4",
+  "duration_s": 60,
+  "resolution": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "narration_seconds": 58.76,
+  "bytes": 15689561,
+  "source_before": "runs/video_adapt/round_0/videos/m5_grid.mp4",
+  "source_after": "runs/video_adapt/round_4/trials/m5/traj.npz",
+  "screens": "Actual local results and voice applications; captured without submitting new model questions.",
+  "narration": "Gemini TTS",
+  "claims": "Development adaptation 7/8 to8/8 in both video and text; modified assisted simulation; no hardware or video-superiority claim."
+}
