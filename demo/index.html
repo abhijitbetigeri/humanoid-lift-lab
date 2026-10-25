@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lift Lab Live</title>
+<style>
+  :root { --bg:#0f1115; --card:#181b22; --ink:#e8eaee; --dim:#9aa1ad; --line:#2a2f3a; --pass:#2fbf71; --fail:#e5534b; --run:#d9a400; --me:#2b4a7a; --argon:#3a2f5c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 -apple-system, system-ui, sans-serif; }
+  header { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; gap: 22px; align-items: baseline; flex-wrap: wrap; }
+  h1 { font-size: 21px; margin: 0; }
+  .mass { font-size: 30px; font-weight: 700; }
+  .mass small { font-size: 17px; color: var(--dim); font-weight: 400; }
+  .stage { color: var(--run); font-size: 17px; flex: 1; min-width: 260px; }
+  .stage.done { color: var(--ink); }
+  .clock { color: var(--dim); font-variant-numeric: tabular-nums; }
+  .wrap { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 20px; padding: 18px 24px; }
+  @media (max-width: 1000px) { .wrap { grid-template-columns: 1fr; } }
+  .chat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; height: calc(100vh - 110px); min-height: 420px; position: sticky; top: 12px; }
+  .feed { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { padding: 8px 12px; border-radius: 10px; max-width: 92%; white-space: pre-wrap; font-size: 15px; }
+  .msg.me { background: var(--me); align-self: flex-end; }
+  .msg.sys { background: #22262f; color: #cfd4dc; }
+  .msg.argon { background: var(--argon); }
+  .msg .who { display: block; font-size: 12px; color: var(--dim); margin-bottom: 2px; }
+  .msg.PASS { border-left: 4px solid var(--pass); } .msg.FAIL { border-left: 4px solid var(--fail); }
+  form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+  input[type=text] { flex: 1; background: #0f1115; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 16px; }
+  button { background: #2d3442; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 0 14px; font-size: 16px; cursor: pointer; }
+  button.rec { background: var(--fail); }
+  .opts { padding: 0 12px 10px; color: var(--dim); font-size: 13px; display: flex; gap: 14px; flex-wrap: wrap; }
+  main { display: grid; gap: 18px; align-content: start; }
+  .att { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 0.8fr); gap: 16px; }
+  @media (max-width: 1400px) { .att { grid-template-columns: 1fr; } }
+  .att h2 { margin: 0 0 8px; font-size: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .badge { padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .badge.PASS { background: var(--pass); color: #04130a; } .badge.FAIL { background: var(--fail); color: #1a0403; } .badge.RUN { background: var(--run); color: #1a1400; }
+  video { width: 100%; border-radius: 6px; background: #000; }
+  .metrics { color: var(--dim); font-size: 13px; margin-top: 6px; }
+  .txt { white-space: pre-wrap; font-size: 13.5px; max-height: 380px; overflow: auto; color: #d4d8df; }
+  .txt h3 { margin: 0 0 4px; font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+  .placeholder { color: var(--dim); font-style: italic; }
+  .empty { color: var(--dim); padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Humanoid Lift Lab · live</h1>
+  <div class="mass" id="mass"></div>
+  <div class="stage" id="stage">Ask for a lift to start.</div>
+  <div class="clock" id="clock"></div>
+</header>
+<div class="wrap">
+  <section class="chat">
+    <div class="feed" id="feed">
+      <div class="msg sys"><span class="who">Lift Lab</span>Tell me what to lift, by typing or with the mic. For example: "lift a 50 pound box", "try 40 pounds", "30 pounds, 3 rounds". The robot tries it in MuJoCo, Gemini 4 Argon watches the video, fixes the controller, and physics re-scores it.</div>
+    </div>
+    <form id="form">
+      <input type="text" id="text" placeholder="lift a 50 pound box" autocomplete="off">
+      <button type="button" id="mic" title="Speak">🎤</button>
+      <button type="submit">Send</button>
+    </form>
+    <div class="opts"><label><input type="checkbox" id="speak" checked> read results aloud</label><span id="micnote"></span></div>
+  </section>
+  <main id="atts"><div class="empty">Attempts appear here: the simulation video, the physics verdict, and Argon's diagnosis.</div></main>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const atts = $("atts"), feed = $("feed");
+const cards = {};
+let run = null, logSeen = 0, argonSeen = new Set(), doneSeen = false, waiting = false;
+
+function esc(s) { return String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+function say(text) {
+  if (!$("speak").checked || !("speechSynthesis" in window)) return;
+  const u = new SpeechSynthesisUtterance(text); u.rate = 1.05; speechSynthesis.speak(u);
+}
+function post(who, text, cls = "sys") {
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  d.innerHTML = `<span class="who">${esc(who)}</span>${esc(text)}`;
+  feed.appendChild(d); feed.scrollTop = feed.scrollHeight;
+}
+function firstPoints(diag, n = 3) {
+  // the opening lines of Argon's diagnosis, without markdown noise, for the chat bubble
+  const lines = diag.split("\n").map(l => l.replace(/[#*`]/g, "").trim()).filter(l => l.length > 25);
+  return lines.slice(0, n).map(l => l.length > 260 ? l.slice(0, 257) + "…" : l).join("\n\n");
+}
+
+async function send(text) {
+  text = text.trim(); if (!text) return;
+  post("You", text, "me"); $("text").value = "";
+  try {
+    const r = await (await fetch("/api/chat", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})})).json();
+    post("Lift Lab", r.reply); say(r.reply);
+    if (r.started) { waiting = true; }
+  } catch (e) { post("Lift Lab", "Could not reach the demo server."); }
+}
+$("form").addEventListener("submit", e => { e.preventDefault(); send($("text").value); });
+
+// voice input (Chrome / Edge / Safari)
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  const rec = new SR(); rec.lang = "en-US"; rec.interimResults = true;
+  let active = false;
+  rec.onresult = e => { const r = e.results[e.results.length - 1]; $("text").value = r[0].transcript; if (r.isFinal) { send(r[0].transcript); } };
+  rec.onend = () => { active = false; $("mic").classList.remove("rec"); };
+  rec.onerror = e => { $("micnote").textContent = "mic: " + e.error; };
+  $("mic").onclick = () => { if (active) { rec.stop(); return; } speechSynthesis.cancel(); active = true; $("mic").classList.add("rec"); rec.start(); };
+} else { $("mic").disabled = true; $("micnote").textContent = "voice input needs Chrome, Edge or Safari"; }
+
+function card(a) {
+  let el = cards[a.round];
+  if (!el) {
+    if (!Object.keys(cards).length) atts.innerHTML = "";
+    el = document.createElement("section");
+    el.className = "att";
+    el.innerHTML = `<div><h2>Attempt ${a.round + 1}<span class="badge"></span></h2><div class="vid"><p class="placeholder">simulating in MuJoCo…</p></div><div class="metrics"></div></div>
+      <div class="txt"><p class="placeholder">${a.round === 0 ? "starting controller" : "Argon's rewrite"} under test</p></div>`;
+    atts.insertBefore(el, atts.firstChild);
+    cards[a.round] = el;
+  }
+  const b = el.querySelector(".badge"), v = a.verdict || "";
+  b.className = "badge " + (v.startsWith("PASS") ? "PASS" : v.startsWith("FAIL") ? "FAIL" : "RUN");
+  b.textContent = v || "running";
+  if (a.video && !el.querySelector("video")) {
+    el.querySelector(".vid").innerHTML = `<video src="${a.video}" autoplay muted loop playsinline controls></video>`;
+  }
+  if (a.box_rise_m !== undefined) {
+    el.querySelector(".metrics").textContent =
+      `box rise ${(+a.box_rise_m || 0).toFixed(2)} m (need 0.45) · mean balance assist ${a.mean_assist_n ?? "–"} N (budget 60) · peak torque ${Math.round(100 * (a.peak_tau_frac || 0))}% of limit`;
+  }
+  if (a.diagnosis && !el.dataset.diag) {
+    el.dataset.diag = 1;
+    el.querySelector(".txt").innerHTML = `<h3>Argon's diagnosis (watched ${a.videos_seen ?? 1} video${a.videos_seen > 1 ? "s" : ""})</h3>${esc(a.diagnosis)}\n\n<h3>Changes</h3>${esc(a.changes)}`;
+  }
+}
+
+async function tick() {
+  let s;
+  try { s = await (await fetch("state.json?t=" + Date.now())).json(); } catch (e) { return; }
+  if (s.run !== run) {
+    // a new run: reset the panel; only narrate it if it started after this page loaded or was requested here
+    const fresh = run !== null || waiting;
+    run = s.run; atts.innerHTML = ""; for (const k in cards) delete cards[k];
+    logSeen = fresh ? 0 : s.log.length; argonSeen = new Set(); doneSeen = !fresh && s.done; waiting = false;
+    if (!fresh) s.attempts.forEach(a => { if (a.diagnosis) argonSeen.add(a.round); });
+  }
+  $("mass").innerHTML = `${Math.round(s.mass_lb)} lb <small>(${s.mass_kg} kg)</small>`;
+  $("stage").textContent = s.stage; $("stage").className = "stage" + (s.done ? " done" : "");
+  const t = s.done ? s.elapsed_s : (Date.now() / 1000 - s.started);
+  $("clock").textContent = `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+  s.attempts.forEach(card);
+
+  for (; logSeen < s.log.length; logSeen++) {
+    const line = s.log[logSeen].replace(/^\[[\d:]+\]\s*/, "");
+    if (/Argon rewrote/.test(line) || /^done:/.test(line)) continue;  // covered by the Argon bubble / final verdict
+    const m = line.match(/physics scorer says (PASS|FAIL)(.*)/);
+    post("MuJoCo physics", line, m ? m[1] : "sys");
+    if (m) say(`Attempt result: ${m[1] === "PASS" ? "pass" : "fail" + m[2].replace(/[:()<]/g, " ")}`);
+  }
+  for (const a of s.attempts) {
+    if (a.diagnosis && !argonSeen.has(a.round)) {
+      argonSeen.add(a.round);
+      const pts = firstPoints(a.diagnosis);
+      post(`Gemini 4 Argon · watched ${a.videos_seen ?? 1} video(s)`, pts + "\n\nRewrote the controller; re-testing now.", "argon");
+      say("Argon's diagnosis. " + pts.split("\n")[0]);
+    }
+  }
+  if (s.done && !doneSeen) {
+    doneSeen = true;
+    const n = s.attempts.length, ok = (s.final || "").startsWith("PASS");
+    const msg = `Final: ${s.final} after ${n} attempt${n > 1 ? "s" : ""} (${Math.round(s.elapsed_s)} s, Argon cost $${s.argon_cost_usd}).`;
+    post("Lift Lab", msg, ok ? "PASS" : "FAIL");
+    if (ok && n === 1) post("Lift Lab", "The robot's current controller already handles this load, so Argon had nothing to fix. Try the edges, like 11 lb or 88 lb, to see Argon adapt it."); say(ok ? `Done. ${Math.round(s.mass_lb)} pounds lifted.` : "Done. Still failing; ask for more rounds or a lighter box.");
+  }
+}
+tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>

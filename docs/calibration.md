@@ -77,5 +77,23 @@ F = m (g + a) · S / (μ · n)
   speed check trips while the tote is touching knee/hip/pelvis links and the accelerations are still finite, the
   sim raises `BoxEjected`. The trial then reports "dropped the box: tote jammed against the legs (...)" instead of
   "contact explosion". "physics: simulation became unstable" is left for real solver blow-ups only.
+- Integrator: `implicit` (was the scene's `implicitfast`). Root cause of the "contact explosions" in Argon runs
+  (live 150436_m20 round 1, reproduced exactly with seed 7): the tote had already left the hands (palm-relative slip
+  0.68 m) and was tumbling at about 20 rad/s with **no contacts and zero constraint force**. Even so, its angular velocity
+  jumped from 23 to 73 rad/s in one 1 ms step, far more than that step's qacc explains (about 35 rad/s²). So the jump came
+  from the velocity update of implicitfast plus noslip, not from any contact. A box spinning on its own in a bare scene is stable with
+  every integrator, so it is the coupling inside the full model. With `noslip_iterations = 0`, `Euler` or `implicit`,
+  the same run plays out without a blow-up. We switched to `implicit`, which also integrates the Coriolis/gyroscopic
+  velocity derivatives, and kept noslip, because it is what makes 20 and 35 kg reliable. Reference results are
+  unchanged or better (v4: 10–35 kg pass on seeds 0 and 1, and 40 kg passes on seed 1).
+- Safety net: if the speed check still trips after the tote is already out of the hands (palm-relative slip above
+  0.25 m, which the scorer already counts as dropped), the sim stops with "dropped the box: box had already slipped out
+  of the hands (... m); sim stopped after the drop". The episode outcome was decided before the solver went bad.
+- Scorer precedence (`sim/trial.py`): if the robot had already fallen (pelvis < 0.45 m) before a physics stop, the
+  reason is "fell (...); sim stopped after the fall". A blow-up after the fall no longer hides the fall.
+- Re-check of every earlier "contact explosion" (10 Argon video trials plus the live 150436_m20 case, same seeds, in
+  runs/w1_livecase/): none blows up now. 9 end as "fell", 1 as "balance assist too high", and none passes. Known
+  remainder: with the robot lying on the floor, its arm links can still go unstable (palm-to-box distance of 20–80 m
+  logged, baseline v4 35 kg too). This happens only after a fall, so it does not change any outcome.
 - The physics timestep is 1 ms. The sim stops with "physics: simulation became unstable" if the root or the tote exceeds
   50 m/s or rad/s.

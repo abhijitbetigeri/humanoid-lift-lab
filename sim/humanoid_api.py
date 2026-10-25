@@ -103,6 +103,7 @@ class Humanoid:
         m.opt.cone = mujoco.mjtCone.mjCONE_ELLIPTIC
         m.opt.impratio = 5.0
         m.opt.noslip_iterations = NOSLIP_ITERS
+        m.opt.integrator = mujoco.mjtIntegrator.mjINT_IMPLICIT   # see docs/calibration.md (was implicitfast)
         m.opt.timestep = TIMESTEP
         self.d = mujoco.MjData(m)
         self.d_ik = mujoco.MjData(m)
@@ -296,6 +297,9 @@ class Humanoid:
                         for g in (c.geom1, c.geom2)
                         if self._box in (self.m.geom_bodyid[c.geom1], self.m.geom_bodyid[c.geom2])
                         and any(k in self.m.body(self.m.geom_bodyid[g]).name for k in ("knee", "hip", "pelvis"))]
+                if self._slip_ref is not None and self.hand_box_slip() > 0.25:
+                    raise BoxEjected("box had already slipped out of the hands (%.2f m); sim stopped after the drop"
+                                     % self.hand_box_slip())
                 if legs and np.isfinite(self.d.qacc).all():
                     raise BoxEjected("tote jammed against the legs (%s) and was squeezed out of the hands"
                                      % ", ".join(sorted(set(legs))))

@@ -129,6 +129,13 @@ def _n_calls(log_dir):
     return len(p.read_text().splitlines()) if p.exists() else 0
 
 
+def progress_score(trials):
+    """Passes first; then partial credit for box rise (capped at the 0.45 m bar) so near-misses count as progress."""
+    passed = sum(1 for t in trials if t.get("success"))
+    rise = sum(min(max(t.get("box_rise_m") or 0.0, 0.0), 0.45) / 0.45 for t in trials if not t.get("success"))
+    return round(passed + 0.5 * rise / max(1, len(trials)), 4)
+
+
 def round_summary(k, trials, masses, cost, wall):
     passed = sorted(t["mass_kg"] for t in trials if t.get("success"))
     assists = [t.get("mean_assist_n") for t in trials if isinstance(t.get("mean_assist_n"), (int, float))]
@@ -151,6 +158,7 @@ def main(argv=None):
     ap.add_argument("--run-dir", default=None, help="default runs/<arm>")
     ap.add_argument("--workers", type=int, default=min(8, os.cpu_count() or 4))
     ap.add_argument("--no-assist", action="store_true")
+    ap.add_argument("--keep-best", action="store_true", help="revise the best controller so far, not the latest")
     ap.add_argument("--render-timeout", type=float, default=900, help="seconds for all of a round's renders")
     a = ap.parse_args(argv)
 
@@ -170,6 +178,7 @@ def main(argv=None):
     summary = json.loads(summ_p.read_text()) if summ_p.exists() else {"arm": a.arm, "rounds": []}
     done = {r["round"]: r for r in summary["rounds"]}
     history = []
+    best = None
 
     for k in range(a.rounds + 1):
         rd = run_dir / f"round_{k}"
@@ -241,15 +250,30 @@ def main(argv=None):
                     _say(f"render failed for {v.name} (exit {pr.exitcode})")
         ok_vids = [(v, l) for v, l in zip(vids, labels) if v.exists()]
 
+        # keep-best: Argon revises the best controller so far, so a regressing rewrite can't erase progress
+        cur = {"round": k, "code": code, "trials": trials, "ok_vids": ok_vids, "score": progress_score(trials)}
+        if a.keep_best and best is not None and cur["score"] < best["score"]:
+            _say(f"round {k}: score {cur['score']} < best {best['score']} (round {best['round']}); revising round {best['round']}")
+            base = best
+        else:
+            base = best = cur
+        rs["score"], rs["revised_from"] = cur["score"], base["round"]
+
         # 4. critique and fix -> next round's controller
         crit = rd / "critique.md"
         nxt = run_dir / f"round_{k + 1}" / "controller.py"
         if k < a.rounds and not (crit.exists() and nxt.exists()):
-            _say(f"round {k}: Argon critique ({'video x%d' % len(ok_vids) if use_video else 'text'})")
+            bv = base["ok_vids"]
+            _say(f"round {k}: Argon critique of round {base['round']} ({'video x%d' % len(bv) if use_video else 'text'})")
             hist = [h for h in history]
+            if base is not cur:
+                hist.append({"round": k, "passed": rs["passed"], "masses": masses, "mean_assist_n": rs["mean_assist_n"],
+                             "changes": f"(round {k}'s rewrite scored {cur['score']}, worse than round {base['round']}'s "
+                                        f"{base['score']}, so it was discarded. You are revising round {base['round']}'s "
+                                        f"controller again; avoid repeating round {k}'s changes.)"})
             critique, new_code = argon.critique_and_fix(
-                code, trials, [v for v, _ in ok_vids], use_video=use_video, history=hist,
-                task_md=task_md, api_md=api_md, video_labels=[l for _, l in ok_vids])
+                base["code"], base["trials"], [v for v, _ in bv], use_video=use_video, history=hist,
+                task_md=task_md, api_md=api_md, video_labels=[l for _, l in bv])
             nxt.parent.mkdir(exist_ok=True)
             crit.write_text(critique + "\n")
             (rd / "argon_reply.md").write_text(argon._last.get("reply", ""))

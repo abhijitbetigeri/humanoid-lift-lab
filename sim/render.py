@@ -77,6 +77,15 @@ def load_traj(traj_npz):
         "box_slip": get("box_slip", np.zeros(T)),
         "phase": [str(p) for p in get("phase", np.array([""] * T))],
     }
+    # after a fall the scorer has already decided FAIL, and the limp arms can go numerically unstable; show only
+    # 1.5 s past the fall (pelvis z is qpos[2], same FALL_Z = 0.45 m as sim/trial.py)
+    fell = np.where(tr["qpos"][:, 2] < 0.45)[0]
+    if len(fell):
+        cut = int(np.searchsorted(tr["time"], tr["time"][fell[0]] + 1.5))
+        for k in ("qpos", "time", "assist_force", "tau_frac", "com_margin", "box_slip"):
+            if tr[k] is not None and len(tr[k]) > cut:
+                tr[k] = tr[k][:cut]
+        tr["phase"] = tr["phase"][:cut]
     if tr["assist_force"].ndim > 1:  # tolerate a 3-vector per frame
         tr["assist_force"] = np.linalg.norm(tr["assist_force"], axis=-1)
     res_path = os.path.join(os.path.dirname(os.path.abspath(traj_npz)), "result.json")

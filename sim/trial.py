@@ -111,7 +111,10 @@ def score(traj, mass_kg, error=None):
     if names:
         body = [i for i, n in enumerate(names) if "hand" not in n]
         res["peak_tau_frac"] = round(float(traj["tau_frac"][:, body].max()), 3)
-    if error:
+    if fell and error and (error.startswith("physics") or error.startswith("dropped the box")):
+        # the fall happened first; whatever the solver did afterwards does not change the outcome
+        reason = f"fell (pelvis below {FALL_Z} m at t={t[fell_idx[0]]:.1f}s); sim stopped after the fall"
+    elif error:
         reason = error
     elif fell:
         reason = f"fell (pelvis below {FALL_Z} m at t={t[fell_idx[0]]:.1f}s)"
