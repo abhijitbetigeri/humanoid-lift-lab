@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lift Lab · Voice</title>
+  <meta name="description" content="Ask spoken questions about saved humanoid lifting experiments and hear evidence-grounded explanations.">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/client.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="/">Lift Lab <span>/ Voice</span></a><a href="/results/">View experiment results ↗</a></header>
+  <main>
+    <section class="intro"><p class="eyebrow">A conversation with the experiment</p><h1>Ask the lift lab.</h1><p>Speak or type a question. Get an explanation grounded in the saved trials, and hear it back.</p></section>
+    <div class="workspace">
+      <section class="conversation" aria-labelledby="question-heading">
+        <div class="section-head"><h2 id="question-heading">Your question</h2><span id="connection" class="state">Connecting…</span></div>
+        <div class="examples" aria-label="Example questions">
+          <button type="button" data-question="Why did the 40 kg lift fail?">Why did 40 kg fail?</button>
+          <button type="button" data-question="Compare the best round with the final round. What changed?">Best versus final round</button>
+          <button type="button" data-question="Explain how the memory-assisted controller improved over the baseline, and what this result does not prove.">What did memory add?</button>
+        </div>
+        <form id="ask-form">
+          <label class="sr-only" for="question">Question about the selected experiment</label>
+          <textarea id="question" maxlength="2000" rows="4" placeholder="For example: What changed between rounds one and two?"></textarea>
+          <div class="recording"><button id="record" type="button" disabled>Record a question</button><span id="record-status" role="status">Up to 20 seconds</span><button id="discard" class="quiet" type="button" hidden>Discard recording</button></div>
+          <div class="submit-row"><label class="check"><input id="speak" type="checkbox" checked> Play answer automatically</label><button id="ask" class="primary" type="submit" disabled>Ask Argon <span aria-hidden="true">→</span></button></div>
+          <p class="privacy">Submitting sends your question or recording and selected run evidence to Google. This interface explains saved results; it does not start robot trials.</p>
+        </form>
+        <div id="progress" class="progress" role="status" aria-live="polite" hidden></div>
+        <div id="error" class="error" role="alert" hidden></div>
+        <section id="response" class="response" aria-live="polite" aria-labelledby="answer-heading" hidden>
+          <div class="transcript"><span>You asked</span><p id="transcript"></p></div>
+          <div class="section-head"><h2 id="answer-heading">Argon’s explanation</h2><span id="answer-scope"></span></div>
+          <p id="answer"></p>
+          <audio id="playback" controls preload="none" hidden aria-label="Spoken answer"></audio>
+          <p id="speech-note" class="muted" hidden></p>
+          <details><summary>Evidence used</summary><ul id="sources"></ul></details>
+        </section>
+        <div id="empty" class="empty"><span class="empty-mark" aria-hidden="true">“</span><p>Start with a failure, a controller change,<br>or a comparison between rounds.</p></div>
+      </section>
+      <aside aria-labelledby="evidence-heading">
+        <div class="evidence-controls"><h2 id="evidence-heading">Choose the evidence</h2><label for="run">Experiment</label><select id="run" disabled><option>Loading saved runs…</option></select><div class="select-row"><div><label for="round">Round</label><select id="round"><option value="best">Best saved round</option></select></div><div><label for="mass">Payload</label><select id="mass"><option value="all">All payloads</option><option value="5">5 kg</option><option value="10">10 kg</option><option value="15">15 kg</option><option value="20">20 kg</option><option value="25">25 kg</option><option value="30">30 kg</option><option value="35">35 kg</option><option value="40">40 kg</option></select></div></div></div>
+        <figure><img src="/preview.png" alt="A saved 25 kg simulation trial showing the humanoid holding the tote." width="960" height="720"><figcaption>A saved 25 kg trial · modified G1 simulation</figcaption></figure>
+        <div class="scope"><h3>What the answer can establish</h3><p>Recorded lift outcomes, controller changes, and possible failure causes. These are assisted simulation development results, not hardware validation.</p><p class="muted">Answers by Argon. Spoken audio by Gemini TTS. Voice responses take a moment to prepare.</p></div>
+      </aside>
+    </div>
+  </main>
+  <footer>Humanoid Lift Lab <span>Saved evidence → explanation → spoken answer</span></footer>
+</body>
+</html>

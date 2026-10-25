@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from evals.run_memory_pilot import build_context, check_resume
+from evals.run_memory_pilot import build_context, check_resume, pilot_environment_files
 from loop.skill_memory import environment_hash, file_hash
 
 
@@ -51,6 +51,14 @@ class MemoryPilotTests(unittest.TestCase):
         (self.root / 'skills.frozen.json').write_text('changed')
         with self.assertRaisesRegex(ValueError, 'memory changed'):
             check_resume(self.root, metadata)
+
+    def test_generated_presentation_videos_are_not_simulator_inputs(self):
+        files = dict(self.files, **{'viz/assets/videos/demo.mp4': 'generated-output',
+                                  'viz/assets/floor.png': 'texture-input'})
+        with patch('evals.run_memory_pilot.environment_files', return_value=files):
+            selected = pilot_environment_files()
+        self.assertNotIn('viz/assets/videos/demo.mp4', selected)
+        self.assertIn('viz/assets/floor.png', selected)
 
 
 if __name__ == '__main__': unittest.main()

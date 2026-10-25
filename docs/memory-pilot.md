@@ -1,6 +1,12 @@
 # Memory-assisted development pilot
 
 Started on 2026-10-25 in `runs/memory_text`; progress log is `runs/memory_text.log`.
+User explicitly approved the reviewed Google Gemini API payload and two paid revision rounds. The pilot resumed
+with network access after a sandbox DNS failure. Round 1 recorded 6/8 passes (10 through 35 kg), versus 0/8 at
+round 0. Results are development evidence; consult the final saved summary for the last round and cost.
+Completed: round 2 passed only 5 kg (1/8), so round 1 is selected as the best development candidate. Both paid
+revisions cost an estimated $0.0846 in total. All 24 trial scores and seed jitters were checked. See
+`reports/memory-pilot-results.md` for the full result, regression, and reference-reuse limitation.
 This is a separate text-feedback condition with additional expert reference guidance. It does not alter the
 existing `runs/video` or `runs/text` conditions, source files, or output directories.
 
@@ -29,8 +35,12 @@ prove all guidance sentences are causally correct, nor that other masses will pa
 - Completion writes `environment-check.json`. An environment mismatch invalidates cross-round physical comparisons.
 - Existing environment/scorer retained; no thresholds or actuator strengths tuned for this pilot.
 
+The results UI generated files under `viz/assets/videos/` after evidence collection. The pilot excludes that
+presentation-output directory from environment inputs. Every original validated input remains hashed; simulator
+source, model XML/meshes, texture inputs, scorer and evidence files were not exempted from verification.
+
 This run makes real paid Argon API calls. API usage/cost appears in `calls.jsonl`; recorded round results appear
-in `summary.json`. No success for Argon's revisions is claimed until results are saved and inspected.
+in `summary.json`. The initial network failure is retained in the call log separately from completed responses.
 
 ## Interpretation
 
@@ -43,6 +53,8 @@ compare saved development outcomes, retain failures, and use the prospective evi
 new skill. The pilot does not automatically admit its own generated controllers or update its frozen memory.
 
 Implementation: `evals/run_memory_pilot.py` uses process-local prompt and video-selection overrides. It does not
-modify shared `loop` modules on disk. A new pilot requires a fresh output directory; no silent resume/overwrite.
+modify shared `loop` modules on disk. A new pilot requires a fresh output directory. Explicit `--resume` verifies
+frozen memory, starting controller, environment, prompt text and revision budget before reusing completed trials.
 
 Tests: 28 tests passed before launch, including stale-environment, held-out-evidence, and empty-retrieval rejection.
+An additional resume-integrity test was added after the network failure.

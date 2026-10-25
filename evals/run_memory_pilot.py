@@ -14,11 +14,18 @@ from evals.development_validation import environment_files
 from loop.skill_memory import SkillMemory, environment_hash, file_hash
 
 
+def pilot_environment_files():
+    # The results UI copies generated demonstration videos here. They are not
+    # MJCF inputs, textures, controller code, or physics configuration.
+    return {name: path for name, path in environment_files().items()
+            if not name.startswith('viz/assets/videos/')}
+
+
 def build_context(memory_path, evidence_config_path, query):
     evidence = json.loads(Path(evidence_config_path).read_text())
     if evidence.get('stub') is not False or evidence.get('split') != 'development':
         raise ValueError('memory requires real development evidence')
-    fingerprint = environment_hash(environment_files())
+    fingerprint = environment_hash(pilot_environment_files())
     if evidence.get('environment_sha256') != fingerprint:
         raise ValueError('evidence environment differs from current simulator')
     text = SkillMemory(memory_path).retrieve(query, environment_sha256=fingerprint, enabled=True, max_chars=3000)
@@ -92,7 +99,7 @@ def main():
                            'memory_sha256': metadata['memory_sha256'], 'memory_enabled': True,
                            'condition': metadata['condition'], 'rendering_disabled': True})
             config_path.write_text(json.dumps(config, indent=2))
-        final_fingerprint = environment_hash(environment_files())
+        final_fingerprint = environment_hash(pilot_environment_files())
         (out / 'environment-check.json').write_text(json.dumps(
             {'before': fingerprint, 'after': final_fingerprint, 'unchanged': final_fingerprint == fingerprint}, indent=2))
 
