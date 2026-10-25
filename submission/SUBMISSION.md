@@ -6,15 +6,15 @@ All five form values are filled below. The demo uses a direct hosted MP4; the fo
 
 ## Project Description
 
-Humanoid Lift Lab: Gemini Argon as a robot-control engineer.
+Humanoid Lift Lab: Gemini 4 Argon fixes a humanoid's lift in simulation before deployment.
 
-Warehouse loads change, and even a working lifting controller can fail on a different payload. We built a closed loop that runs a humanoid lift in MuJoCo, renders the attempt, gives Argon video and numerical telemetry, and asks it to diagnose failures and rewrite a readable Python controller. A deterministic scorer then checks the next attempt; the model does not grade itself.
+Humanoids can do the lift-and-shift work of small businesses, workshops and households: boxes, stock and furniture parts, often in cramped spaces where getting extra people to help is hard. Every load is different, and a lift tuned for one box can tip the robot or drop the next. There is no robotics engineer on site to re-tune it, and testing on the real robot risks broken boxes, damaged robots or injuries. Our loop finds and fixes those failures in MuJoCo first: the robot attempts the lift, we render the attempt, Argon watches the video with numerical telemetry, diagnoses the physics and rewrites a readable Python controller. A deterministic physics scorer checks the next attempt; the model never grades itself, and a keep-best rule discards any rewrite that regresses.
 
-Starting from an engineer-written reference, both video-plus-telemetry and telemetry-only adaptation improved from 7/8 to 8/8 successful tested payloads after four revision rounds, across 5–40 kg (about 11–88 lb). The video controller repaired a 5 kg drop while retaining the heavier lifts. Success requires at least 0.45 m rise, a 3-second hold, no fall/drop/error, and mean balance assistance at or below 60 N. A keep-best loop preserves progress when a rewrite regresses.
+Starting from an engineer-written controller that lifted 22–88 lb but dropped a light 11 lb box, both video-plus-telemetry and telemetry-only adaptation went from 7/8 to 8/8 tested loads (11–88 lb) in four revision rounds, fixing the 11 lb drop without losing the heavier lifts. Success requires at least 0.45 m of rise, a 3-second hold, no fall or drop, and mean balance assist at or below 60 N. Starting instead from a textbook stoop-lift controller, no arm reached a pass in 6–8 rounds; that is our stated limit.
 
-The project includes a live payload-request demo, traceable controller/critique/results artifacts, optional validated skill memory, and spoken questions about saved evidence with generated speech responses.
+The live demo takes a request by chat or voice ("lift an 11 pound box"), runs it in MuJoCo with regression checks at 33 and 66 lb, shows Argon's timestamped diagnosis and the exact code diff it made, and re-tests. A results site shows every round, critique and video, and a voice companion answers spoken questions about the saved evidence.
 
-These are development results in a modified, assisted G1-based simulation—not hardware validation or held-out generalization. Both feedback conditions reached 8/8, so we do not claim video superiority.
+These are development results in a modified, assisted G1-based simulation (torques scaled to full-size humanoid class, in-place lift only), not hardware validation or held-out generalization. Both feedback conditions reached 8/8, so we do not claim video superiority.
 
 ## Public Project GitHub Repository
 
@@ -28,7 +28,7 @@ Video file: `submission/humanoid-lift-lab-60s.mp4` (60.0 s, 1280x720, H.264/AAC,
 
 ## Describe your use of Google products
 
-Gemini 4 Argon (gemini-4-argon) is the controller critic and code generator. Through the Gemini API's Interactions API, it receives the task, motion-API documentation, current Python controller, scored trial results, telemetry, and revision history. The video condition uploads MuJoCo renders through the Files API so Argon can inspect the attempts before returning a complete revised controller. Background calls support the controller-revision workflow.
+Gemini 4 Argon (gemini-4-argon) is the controller critic and code generator. In the live demo each call carries the video of every attempt so far in one context. Through the Gemini API's Interactions API, it receives the task, motion-API documentation, current Python controller, scored trial results, telemetry, and revision history. The video condition uploads MuJoCo renders through the Files API so Argon can inspect the attempts before returning a complete revised controller. Background calls support the controller-revision workflow.
 
 The voice companion sends recorded questions directly to Argon as audio, grounded in selected saved experiment evidence. Gemini 3.8 Flash TTS (gemini-3.8-flash-tts) speaks the resulting explanation and also generated the submission video's narration.
 
