@@ -33,7 +33,7 @@ def newest_traj():
     except Exception:  # noqa: BLE001
         return None, None
     for att in reversed(s.get("attempts", [])):
-        p = ROOT / "runs" / "live" / s["run"] / f"round_{att['round']}" / "trial" / "traj.npz"
+        p = ROOT / "runs" / "live" / s.get("src_run", s["run"]) / f"round_{att['round']}" / "trial" / "traj.npz"
         if p.exists() and att.get("verdict"):
             return p, f"Attempt {att['round'] + 1} at {s['mass_kg']:g} kg: {att['verdict']}"
     return None, None

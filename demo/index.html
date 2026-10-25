@@ -146,7 +146,7 @@ function card(a) {
     el.dataset.diag = 1;
     const d = (a.argon && a.argon.diff) || "";
     const diffHtml = d.split("\n").map(l => `<span class="${l.startsWith("+") ? "add" : l.startsWith("-") ? "del" : l.startsWith("@@") ? "hunk" : ""}">${esc(l) || " "}</span>`).join("");
-    el.querySelector(".txt").innerHTML = `<div class="argon-box"><h3>Argon's diagnosis (watched ${a.videos_seen ?? 1} video${a.videos_seen > 1 ? "s" : ""}${a.argon ? ", " + a.argon.seconds + " s" : ""})</h3>${esc(a.diagnosis)}\n\n<h3>What it changed</h3>${esc(a.changes)}`
+    el.querySelector(".txt").innerHTML = `<div class="argon-box"><h3>Argon's diagnosis (watched ${a.videos_seen ?? 1} video${a.videos_seen > 1 ? "s" : ""}${a.argon && a.argon.seconds ? ", " + a.argon.seconds + " s" : ""})</h3>${esc(a.diagnosis)}\n\n<h3>What it changed</h3>${esc(a.changes)}`
       + (d ? `\n<h3>Code diff (${a.argon.lines_changed} lines)</h3><div class="diff">${diffHtml}</div>` : "") + `</div>`;
   }
 }
@@ -162,7 +162,7 @@ async function tick() {
     if (!fresh) s.attempts.forEach(a => { if (a.diagnosis) argonSeen.add(a.round); if (a.argon) watchSeen.add(a.round); });
   }
   $("mass").innerHTML = `${Math.round(s.mass_lb)} lb <small>(${s.mass_kg} kg)</small>`;
-  $("stage").textContent = s.stage; $("stage").className = "stage" + (s.done ? " done" : "");
+  $("stage").textContent = (s.replay ? `REPLAY of the ${s.replay} live run · ` : "") + s.stage; $("stage").className = "stage" + (s.done ? " done" : "");
   const t = s.done ? s.elapsed_s : (Date.now() / 1000 - s.started);
   $("clock").textContent = `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
   s.attempts.forEach(card);
