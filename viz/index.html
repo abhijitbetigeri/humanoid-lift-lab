@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Humanoid Lift Lab</title>
+<meta name="description" content="Gemini 4 Argon writes a whole-body lift controller for a humanoid, watches MuJoCo video of its own attempts, and rewrites it. Physics scores every round.">
+<style>
+:root {
+  --bg: #f7f6f2; --panel: #ffffff; --ink: #1b1d21; --muted: #5d6470; --line: #e2e0d8;
+  --video: #d4572a; --text: #2f6fb3; --base: #8a8f98; --ref: #2e8b57;
+  --pass: #2e8b57; --fail: #c4473a; --pend: #b9b6ab; --code: #f0eee7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121417; --panel: #1b1e23; --ink: #e8e6e1; --muted: #9aa1ab; --line: #2c3037;
+    --video: #f07a4b; --text: #6aa6e8; --base: #9aa0a8; --ref: #4fbf83;
+    --pass: #4fbf83; --fail: #e2685b; --pend: #4a4e55; --code: #23272d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121417; --panel: #1b1e23; --ink: #e8e6e1; --muted: #9aa1ab; --line: #2c3037;
+  --video: #f07a4b; --text: #6aa6e8; --base: #9aa0a8; --ref: #4fbf83;
+  --pass: #4fbf83; --fail: #e2685b; --pend: #4a4e55; --code: #23272d;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: clamp(1.7rem, 5vw, 2.6rem); line-height: 1.15; margin: 8px 0 8px; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; margin: 40px 0 8px; }
+h3 { font-size: 1.05rem; margin: 16px 0 6px; }
+p { margin: 8px 0; }
+a { color: var(--text); }
+.lede { color: var(--muted); max-width: 760px; font-size: 1.05rem; }
+.eyebrow { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; color: var(--muted); font-weight: 600; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+.tile .v { font-size: 1.7rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile .k { color: var(--muted); font-size: .85rem; }
+.chartbox { position: relative; height: 340px; }
+.note { color: var(--muted); font-size: .88rem; }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.status { display: inline-block; font-size: .78rem; padding: 1px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.status.running::after { content: "…"; }
+.matrix-wrap { overflow-x: auto; }
+table.matrix { border-collapse: collapse; width: 100%; min-width: 520px; font-variant-numeric: tabular-nums; font-size: .9rem; }
+table.matrix th, table.matrix td { border-bottom: 1px solid var(--line); padding: 6px 4px; text-align: center; }
+table.matrix th:first-child, table.matrix td:first-child { text-align: left; white-space: nowrap; }
+.cell { display: inline-block; min-width: 38px; padding: 2px 4px; border-radius: 5px; color: #fff; font-size: .78rem; cursor: help; }
+.cell.ok { background: var(--pass); } .cell.no { background: var(--fail); } .cell.na { background: var(--pend); }
+details { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); margin: 8px 0; }
+details > summary { cursor: pointer; padding: 10px 14px; font-weight: 600; list-style-position: inside; }
+details > .body { padding: 0 16px 12px; overflow-wrap: anywhere; }
+.md code { background: var(--code); padding: 1px 4px; border-radius: 4px; font-size: .88em; }
+.md pre { background: var(--code); padding: 10px; border-radius: 6px; overflow-x: auto; font-size: .82rem; }
+.md pre code { background: none; padding: 0; }
+.md h1, .md h2, .md h3, .md h4 { font-size: 1rem; margin: 14px 0 4px; }
+.md ul, .md ol { padding-left: 20px; }
+.vids { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.panel, .tiles > * { min-width: 0; }
+@media (max-width: 720px) { .vids { grid-template-columns: 1fr; } .chartbox { height: 300px; } .tile .v { font-size: 1.25rem; } }
+.vids figure { margin: 0; }
+.vids video { width: 100%; border-radius: 8px; background: #000; display: block; }
+.vids figcaption { font-size: .88rem; color: var(--muted); margin-top: 4px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+.seg button { font: inherit; font-size: .88rem; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.method li { margin: 6px 0; }
+footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1px solid var(--line); padding-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Gemini 4 Argon hackathon</div>
+  <h1>Humanoid Lift Lab</h1>
+  <p class="lede">Gemini 4 Argon writes a whole-body lift controller for a humanoid, runs it in MuJoCo on totes from 5 to 40 kg,
+    watches the rendered video of each attempt, explains what went wrong and rewrites the controller.
+    A hidden physics scorer grades every round; the critic never scores itself.</p>
+  <p class="note" id="gen"></p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <h2>Success vs tote mass</h2>
+  <p class="note">One trial per mass per round. A pass means the tote rises at least 0.45 m and is held 3 s, the robot stays up,
+    and the mean balance assist stays within <span id="budget">60</span> N. Grey dashed: textbook baseline. Green dashed: hand-written reference controller (shows the task can be solved).</p>
+  <div class="panel"><div class="chartbox"><canvas id="massChart" aria-label="Success rate by tote mass"></canvas></div></div>
+
+  <h3>Every round, every mass</h3>
+  <p class="note">Hover or tap a cell for the scorer's reason and the mean balance assist.</p>
+  <div class="panel matrix-wrap"><table class="matrix" id="matrix"></table></div>
+
+  <h2>Heaviest tote lifted, by round</h2>
+  <p class="note">0 kg means no mass passed that round.</p>
+  <div class="panel"><div class="chartbox"><canvas id="roundChart" aria-label="Max liftable mass per round"></canvas></div></div>
+
+  <h2>Round 0 vs final round</h2>
+  <p class="note">Rendered grid video (hero and side views with the torque and balance HUD), the same video Argon watches in the video arm.</p>
+  <div class="seg" id="vidArm" role="group" aria-label="Arm"></div>
+  <div class="seg" id="vidMass" role="group" aria-label="Mass"></div>
+  <div class="vids" id="vids"></div>
+
+  <h2>What Argon saw and changed (video arm)</h2>
+  <p class="note">Round <i>k</i>'s critique diagnoses round <i>k</i>'s trials; its rewrite becomes round <i>k</i>+1's controller.</p>
+  <div id="critiques"></div>
+
+  <h2>Method and limits</h2>
+  <div class="panel method">
+    <ul>
+      <li><b>Generic humanoid, scaled torques.</b> The body is the Unitree G1 model from MuJoCo Menagerie, with joint torques scaled up to the
+        Unitree H1-2 / Boston Dynamics Atlas class (hip 320 N·m, knee 400 N·m, shoulder 150 N·m). A stock G1 cannot do this task:
+        ResMimic (<a href="https://arxiv.org/abs/2510.05070">arXiv 2510.05070</a>) reports a wrist limit of about 2.5 kg. For scale, Atlas is specified at
+        30 kg sustained and 50 kg brief. So read this as a generic warehouse-class humanoid, not a G1 claim.</li>
+      <li><b>In-place lift only.</b> The robot squats, grips and stands up with the tote. No walking, no carrying, no placing.</li>
+      <li><b>Physics scores, not the critic.</b> Success comes from the simulator (tote rise, hold time, fall, drop, mean balance assist). Argon's
+        critique has no effect on the score.</li>
+      <li><b>Balance assist.</b> A PD force on the pelvis keeps the early rounds from falling over at once; its mean magnitude is recorded and capped at 60 N
+        for a pass, so a controller cannot lean on it.</li>
+      <li><b>Small sample.</b> One seed, one trial per mass, a few rounds per arm. Treat differences of one mass step as noise.</li>
+      <li><b>Assumed friction.</b> Tote μ = 0.8, palm 0.85–1.0, the upper end of rubber on plastic; no published value was found.</li>
+      <li><b>Related work.</b> NVlabs ASPIRE (<a href="https://arxiv.org/abs/2607.00272">arXiv 2607.00272</a>) also has an LLM refine robot skill code in simulation,
+        but for a tabletop arm and without diagnosing physics from video. Payload-robust legged control is usually learned with mass randomization
+        plus RL (RMA, Walk These Ways); here the output is a short controller a person can read.</li>
+    </ul>
+  </div>
+
+  <footer>Built from <code>runs/</code> by <code>viz/build_site.py</code>. Data: <a href="data.json">data.json</a>.</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+  const KG2LB = 2.20462;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmtKg = m => m == null ? "none" : `${m} kg (${Math.round(m * KG2LB)} lb)`;
+
+  // Minimal Markdown: headings, lists, bold, italics, inline code, fenced code, paragraphs.
+  function md(src) {
+    if (!src) return "";
+    const lines = src.replace(/\r/g, "").split("\n");
+    let out = [], inCode = false, code = [], list = null, para = [];
+    const inline = t => esc(t)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+      .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>");
+    const flushP = () => { if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; } };
+    const flushL = () => { if (list) { out.push(`<${list.t}>` + list.items.map(i => "<li>" + inline(i) + "</li>").join("") + `</${list.t}>`); list = null; } };
+    for (const raw of lines) {
+      if (/^```/.test(raw)) {
+        if (inCode) { out.push("<pre><code>" + esc(code.join("\n")) + "</code></pre>"); code = []; inCode = false; }
+        else { flushP(); flushL(); inCode = true; }
+        continue;
+      }
+      if (inCode) { code.push(raw); continue; }
+      const line = raw.trim();
+      let m;
+      if (!line) { flushP(); flushL(); continue; }
+      if ((m = line.match(/^(#{1,6})\s+(.*)$/))) { flushP(); flushL(); const h = Math.min(4, m[1].length + 1); out.push(`<h${h}>${inline(m[2])}</h${h}>`); continue; }
+      if ((m = raw.match(/^\s*[-*]\s+(.*)$/)) || (m = raw.match(/^\s*\d+[.)]\s+(.*)$/))) {
+        flushP(); const t = /^\s*\d/.test(raw) ? "ol" : "ul";
+        if (!list || list.t !== t) { flushL(); list = { t, items: [] }; }
+        list.items.push(m[1]); continue;
+      }
+      if (list && /^\s{2,}/.test(raw)) { list.items[list.items.length - 1] += " " + line; continue; }
+      flushL(); para.push(line);
+    }
+    if (inCode) out.push("<pre><code>" + esc(code.join("\n")) + "</code></pre>");
+    flushP(); flushL();
+    return out.join("\n");
+  }
+
+  fetch("data.json", { cache: "no-store" }).then(r => r.json()).then(render).catch(e => {
+    document.getElementById("gen").textContent = "Could not load data.json: " + e;
+  });
+
+  function render(D) {
+    const arms = D.arms || {};
+    const V = arms.video, T = arms.text, B = D.refs && D.refs.baseline, R = D.refs && D.refs.reference;
+    const masses = (V && V.masses) || (T && T.masses) || [5, 10, 15, 20, 25, 30, 35, 40];
+    document.getElementById("gen").textContent = "Data generated " + D.generated_at + ".";
+    document.getElementById("budget").textContent = D.assist_budget_n || 60;
+    const done = a => a ? a.rounds.filter(r => r.status === "done") : [];
+    const last = a => { const d = done(a); return d.length ? d[d.length - 1] : null; };
+    const best = a => { const v = done(a).map(r => r.max_mass_passed).filter(x => x != null); return v.length ? Math.max(...v) : null; };
+    const cost = a => a && a.total_cost_usd != null ? a.total_cost_usd : 0;
+    const progress = a => a ? `${done(a).length}/${a.rounds.length} rounds` + (done(a).length < a.rounds.length ? ", running…" : "") : "not started";
+
+    // Tiles
+    const tiles = [
+      [fmtKg(best(V)), "Video arm, heaviest pass (" + progress(V) + ")"],
+      [fmtKg(best(T)), "Text-only arm, heaviest pass (" + progress(T) + ")"],
+      [B ? fmtKg(B.max_mass_passed) : "n/a", "Textbook baseline, heaviest pass"],
+      [R ? fmtKg(R.max_mass_passed) : "n/a", "Hand-written reference, heaviest pass"],
+      ["$" + (cost(V) + cost(T)).toFixed(2), "Argon API cost so far, both arms"],
+    ];
+    document.getElementById("tiles").innerHTML = tiles.map(([v, k]) =>
+      `<div class="panel tile"><div class="v">${esc(v)}</div><div class="k">${esc(k)}</div></div>`).join("");
+
+    const C = { video: css("--video"), text: css("--text"), base: css("--base"), ref: css("--ref"), ink: css("--ink"), muted: css("--muted"), line: css("--line") };
+    Chart.defaults.color = C.muted; Chart.defaults.borderColor = C.line;
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+
+    const series = pm => masses.map(m => { const r = pm && pm[String(m)]; return r ? (r.success ? 1 : 0) : null; });
+    const ds = [];
+    const addArm = (a, key, label) => {
+      if (!a) return;
+      const d = done(a); if (!d.length) return;
+      const r0 = d[0], rf = d[d.length - 1];
+      ds.push({ label: `${label}, round 0`, data: series(r0.per_mass), borderColor: C[key], backgroundColor: C[key], borderWidth: 1.5, borderDash: [2, 3], pointRadius: 3, pointStyle: "circle", stepped: false, tension: 0, _per: r0.per_mass });
+      if (rf !== r0) ds.push({ label: `${label}, round ${rf.round}${rf.round < a.rounds.length - 1 ? " (latest)" : " (final)"}`, data: series(rf.per_mass), borderColor: C[key], backgroundColor: C[key], borderWidth: 3, pointRadius: 5, pointStyle: key === "video" ? "rectRot" : "triangle", tension: 0, _per: rf.per_mass });
+    };
+    if (B) ds.push({ label: "Textbook baseline", data: series(B.per_mass), borderColor: C.base, backgroundColor: C.base, borderDash: [6, 4], borderWidth: 2, pointRadius: 0, _per: B.per_mass });
+    if (R) ds.push({ label: "Reference controller", data: series(R.per_mass), borderColor: C.ref, backgroundColor: C.ref, borderDash: [6, 4], borderWidth: 2, pointRadius: 0, _per: R.per_mass });
+    addArm(V, "video", "Video arm"); addArm(T, "text", "Text arm");
+    // offset overlapping binary lines slightly so each stays visible
+    ds.forEach((d, i) => { const off = (i - (ds.length - 1) / 2) * 0.018; d.data = d.data.map(v => v == null ? null : v + off); d._off = off; });
+
+    const tip = (ctx) => {
+      const d = ctx.dataset, m = masses[ctx.dataIndex], r = d._per && d._per[String(m)];
+      if (!r) return `${d.label}: no data`;
+      return `${d.label}: ${r.success ? "PASS" : "FAIL"}${r.success ? "" : " – " + (r.fail_reason || "")} · assist ${r.mean_assist_n ?? "?"} N`;
+    };
+    new Chart(document.getElementById("massChart"), {
+      type: "line",
+      data: { labels: masses.map(m => [`${m} kg`, `${Math.round(m * KG2LB)} lb`]), datasets: ds },
+      options: {
+        maintainAspectRatio: false, spanGaps: true, interaction: { mode: "nearest", intersect: false },
+        scales: {
+          y: { min: -0.1, max: 1.1, title: { display: true, text: "Success rate" }, ticks: { stepSize: 0.5, callback: v => (v >= 0 && v <= 1 && Math.abs(v * 2 - Math.round(v * 2)) < 1e-6) ? Math.round(v * 100) + "%" : "" } },
+          x: { title: { display: true, text: "Tote mass" } }
+        },
+        plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } }, tooltip: { callbacks: { label: tip } } }
+      }
+    });
+
+    // Matrix
+    const rowsHtml = [];
+    const cell = (r) => !r ? `<span class="cell na" title="no data">·</span>`
+      : `<span class="cell ${r.success ? "ok" : "no"}" title="${esc((r.success ? "PASS" : "FAIL: " + (r.fail_reason || "")) + " | mean assist " + (r.mean_assist_n ?? "?") + " N | rise " + (r.box_rise_m ?? "?") + " m")}">${r.success ? "pass" : "fail"}</span>`;
+    const pct = x => x == null ? "" : Math.round(x * 100) + "%";
+    rowsHtml.push("<tr><th>Run</th>" + masses.map(m => `<th>${m} kg<br><span class="note">${Math.round(m * KG2LB)} lb</span></th>`).join("") + "<th>Pass</th></tr>");
+    if (B) rowsHtml.push(`<tr><td>Textbook baseline</td>${masses.map(m => `<td>${cell(B.per_mass[String(m)])}</td>`).join("")}<td>${pct(B.pass_rate)}</td></tr>`);
+    if (R) rowsHtml.push(`<tr><td>Reference controller</td>${masses.map(m => `<td>${cell(R.per_mass[String(m)])}</td>`).join("")}<td>${pct(R.pass_rate)}</td></tr>`);
+    for (const [key, a, label] of [["video", V, "Video arm"], ["text", T, "Text arm"]]) {
+      if (!a) continue;
+      for (const r of a.rounds) {
+        const lab = `<span class="legend-dot" style="background:${C[key]}"></span>${label} r${r.round}`;
+        if (r.status !== "done") { rowsHtml.push(`<tr><td>${lab}</td><td colspan="${masses.length + 1}"><span class="status ${r.status === "running" ? "running" : ""}">${r.status === "running" ? "running" : "pending"}</span></td></tr>`); continue; }
+        rowsHtml.push(`<tr><td>${lab}</td>${masses.map(m => `<td>${cell(r.per_mass[String(m)])}</td>`).join("")}<td>${pct(r.pass_rate)}</td></tr>`);
+      }
+    }
+    document.getElementById("matrix").innerHTML = rowsHtml.join("");
+
+    // Max mass per round
+    const nR = Math.max(V ? V.rounds.length : 0, T ? T.rounds.length : 0, 1);
+    const rlabels = Array.from({ length: nR }, (_, i) => "Round " + i);
+    const perRound = a => Array.from({ length: nR }, (_, i) => { const r = a && a.rounds[i]; return r && r.status === "done" ? (r.max_mass_passed || 0) : null; });
+    const flat = (v) => Array(nR).fill(v == null ? 0 : v);
+    const rds = [];
+    if (V) rds.push({ label: "Video arm", data: perRound(V), borderColor: C.video, backgroundColor: C.video, borderWidth: 3, pointRadius: 5, pointStyle: "rectRot", _a: V });
+    if (T) rds.push({ label: "Text arm", data: perRound(T), borderColor: C.text, backgroundColor: C.text, borderWidth: 3, pointRadius: 5, pointStyle: "triangle", _a: T });
+    if (R) rds.push({ label: "Reference controller", data: flat(R.max_mass_passed), borderColor: C.ref, borderDash: [6, 4], borderWidth: 2, pointRadius: 0 });
+    if (B) rds.push({ label: "Textbook baseline", data: flat(B.max_mass_passed), borderColor: C.base, borderDash: [6, 4], borderWidth: 2, pointRadius: 0 });
+    new Chart(document.getElementById("roundChart"), {
+      type: "line",
+      data: { labels: rlabels, datasets: rds },
+      options: {
+        maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+        scales: { y: { min: 0, max: 45, title: { display: true, text: "Heaviest pass (kg)" }, ticks: { stepSize: 5, callback: v => `${v} kg / ${Math.round(v * KG2LB)} lb` } } },
+        plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
+          tooltip: { callbacks: { label: ctx => {
+            const a = ctx.dataset._a; const r = a && a.rounds[ctx.dataIndex];
+            if (a && (!r || r.status !== "done")) return `${ctx.dataset.label}: running…`;
+            const v = ctx.raw; return `${ctx.dataset.label}: ${v ? v + " kg" : "none"}` + (r && r.pass_rate != null ? ` · pass ${Math.round(r.pass_rate * 100)}%` + (r.mean_assist_n != null ? ` · assist ${r.mean_assist_n.toFixed(0)} N` : "") : "");
+          } } } }
+      }
+    });
+
+    // Videos
+    const vids = D.videos || [];
+    const armsWithVids = ["video", "text"].filter(k => vids.some(v => v.arm === k));
+    let selArm = armsWithVids[0], selMass = null;
+    const segArm = document.getElementById("vidArm"), segMass = document.getElementById("vidMass"), box = document.getElementById("vids");
+    function drawVids() {
+      const mine = vids.filter(v => v.arm === selArm);
+      const allR = [...new Set(mine.map(v => v.round))].sort((a, b) => a - b);
+      const at = rn => new Set(mine.filter(v => v.round === rn).map(v => v.mass_kg));
+      const first = at(allR[0]), lastS = at(allR[allR.length - 1]);
+      let ms = [...first].filter(m => lastS.has(m));
+      if (!ms.length) ms = [...new Set(mine.map(v => v.mass_kg))];
+      ms.sort((a, b) => a - b);
+      if (!ms.includes(selMass)) selMass = ms[ms.length - 1];
+      segArm.innerHTML = armsWithVids.map(k => `<button data-a="${k}" aria-pressed="${k === selArm}">${k === "video" ? "Video arm" : "Text arm"}</button>`).join("");
+      segMass.innerHTML = ms.map(m => `<button data-m="${m}" aria-pressed="${m === selMass}">${m} kg / ${Math.round(m * KG2LB)} lb</button>`).join("");
+      const rs = [...new Set(mine.filter(v => v.mass_kg === selMass).map(v => v.round))].sort((a, b) => a - b);
+      const a = arms[selArm];
+      const pick = rs.length > 1 ? [rs[0], rs[rs.length - 1]] : rs;
+      box.innerHTML = pick.map(rn => {
+        const v = mine.find(x => x.round === rn && x.mass_kg === selMass);
+        const r = a && a.rounds[rn], pm = r && r.per_mass[String(selMass)];
+        const verdict = pm ? (pm.success ? "PASS" : "FAIL: " + (pm.fail_reason || "")) : "";
+        const isFinal = a && rn === a.rounds.length - 1;
+        return `<figure><video src="${esc(v.src)}" controls muted playsinline preload="metadata"></video>
+          <figcaption><b>Round ${rn}${rn === 0 ? " (textbook seed)" : isFinal ? " (final)" : " (latest so far)"}</b> · ${esc(verdict)}</figcaption></figure>`;
+      }).join("") + (pick.length < 2 ? `<figure><div class="panel note">Final-round video not available yet (running…).</div></figure>` : "");
+    }
+    if (!vids.length) box.innerHTML = `<div class="panel note">No videos yet (running…).</div>`;
+    else {
+      segArm.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { selArm = b.dataset.a; drawVids(); } });
+      segMass.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { selMass = +b.dataset.m; drawVids(); } });
+      drawVids();
+    }
+
+    // Critiques (video arm)
+    const cbox = document.getElementById("critiques");
+    if (!V) cbox.innerHTML = `<div class="panel note">Video arm not started.</div>`;
+    else cbox.innerHTML = V.rounds.map(r => {
+      const head = `Round ${r.round}` + (r.status === "done"
+        ? ` · ${r.pass_rate != null ? Math.round(r.pass_rate * 100) + "% pass" : ""} · heaviest ${r.max_mass_passed != null ? r.max_mass_passed + " kg" : "none"}${r.mean_assist_n != null ? " · mean assist " + r.mean_assist_n.toFixed(0) + " N" : ""}`
+        : ` · <span class="status ${r.status === "running" ? "running" : ""}">${r.status}</span>`);
+      const body = r.critique ? `<div class="md">${md(r.critique)}</div>`
+        : `<p class="note">${r.status === "done" ? (r.round === V.rounds.length - 1 ? "Final round: scored, no further critique." : "Critique not written yet (running…).") : "Running…"}</p>`;
+      const code = r.controller ? `<details><summary>Controller used in round ${r.round} (${r.controller.split("\n").length} lines)</summary><div class="body md"><pre><code>${esc(r.controller)}</code></pre></div></details>` : "";
+      return `<details${r.round === 0 ? " open" : ""}><summary>${head}</summary><div class="body">${body}${code}</div></details>`;
+    }).join("");
+  }
+})();
+</script>
+</body>
+</html>

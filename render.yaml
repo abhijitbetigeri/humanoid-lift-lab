@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: humanoid-lift-lab
+    runtime: static
+    buildCommand: "true"
+    staticPublishPath: ./viz
