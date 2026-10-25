@@ -41,6 +41,11 @@
   .txt { white-space: pre-wrap; font-size: 13.5px; max-height: 380px; overflow: auto; color: #d4d8df; }
   .txt h3 { margin: 0 0 4px; font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
   .placeholder { color: var(--dim); font-style: italic; }
+  .argon-box { border: 1px solid #5b4b8a; background: #221c33; border-radius: 8px; padding: 10px 12px; }
+  .argon-box .pulse { color: #c9b8ff; font-weight: 600; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .45; } }
+  .diff { font: 12px/1.4 ui-monospace, Menlo, monospace; white-space: pre; overflow: auto; max-height: 260px; background: #0b0d11; border-radius: 6px; padding: 8px; margin-top: 6px; }
+  .diff .add { color: #5fd48f; background: #10251a; display: block; } .diff .del { color: #ff8a80; background: #2a1312; display: block; } .diff .hunk { color: #7aa2f7; display: block; }
   .empty { color: var(--dim); padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: 10px; }
 </style>
 </head>
@@ -69,7 +74,7 @@
 const $ = id => document.getElementById(id);
 const atts = $("atts"), feed = $("feed");
 const cards = {};
-let run = null, logSeen = 0, argonSeen = new Set(), doneSeen = false, waiting = false;
+let run = null, logSeen = 0, argonSeen = new Set(), watchSeen = new Set(), doneSeen = false, waiting = false;
 
 function esc(s) { return String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
 function say(text) {
@@ -131,9 +136,18 @@ function card(a) {
     el.querySelector(".metrics").textContent =
       `box rise ${(+a.box_rise_m || 0).toFixed(2)} m (need 0.45) · mean balance assist ${a.mean_assist_n ?? "–"} N (budget 60) · peak torque ${Math.round(100 * (a.peak_tau_frac || 0))}% of limit`;
   }
+  if (a.argon && a.argon.status === "watching" && !a.diagnosis) {
+    const secs = Math.round(Date.now() / 1000 - a.argon.started);
+    el.querySelector(".txt").innerHTML = `<div class="argon-box"><div class="pulse">Gemini 4 Argon is watching ${a.argon.videos.length} video${a.argon.videos.length > 1 ? "s" : ""} and reading the physics telemetry… ${secs}s</div>`
+      + `<h3 style="margin-top:8px">Videos in its context</h3>${a.argon.videos.map(v => "• " + esc(v.split(" (left:")[0])).join("\n")}`
+      + `\n<h3 style="margin-top:8px">Physics results it is explaining</h3>${a.argon.evidence.map(e => "• " + esc(e)).join("\n")}</div>`;
+  }
   if (a.diagnosis && !el.dataset.diag) {
     el.dataset.diag = 1;
-    el.querySelector(".txt").innerHTML = `<h3>Argon's diagnosis (watched ${a.videos_seen ?? 1} video${a.videos_seen > 1 ? "s" : ""})</h3>${esc(a.diagnosis)}\n\n<h3>Changes</h3>${esc(a.changes)}`;
+    const d = (a.argon && a.argon.diff) || "";
+    const diffHtml = d.split("\n").map(l => `<span class="${l.startsWith("+") ? "add" : l.startsWith("-") ? "del" : l.startsWith("@@") ? "hunk" : ""}">${esc(l) || " "}</span>`).join("");
+    el.querySelector(".txt").innerHTML = `<div class="argon-box"><h3>Argon's diagnosis (watched ${a.videos_seen ?? 1} video${a.videos_seen > 1 ? "s" : ""}${a.argon ? ", " + a.argon.seconds + " s" : ""})</h3>${esc(a.diagnosis)}\n\n<h3>What it changed</h3>${esc(a.changes)}`
+      + (d ? `\n<h3>Code diff (${a.argon.lines_changed} lines)</h3><div class="diff">${diffHtml}</div>` : "") + `</div>`;
   }
 }
 
@@ -144,8 +158,8 @@ async function tick() {
     // a new run: reset the panel; only narrate it if it started after this page loaded or was requested here
     const fresh = run !== null || waiting;
     run = s.run; atts.innerHTML = ""; for (const k in cards) delete cards[k];
-    logSeen = fresh ? 0 : s.log.length; argonSeen = new Set(); doneSeen = !fresh && s.done; waiting = false;
-    if (!fresh) s.attempts.forEach(a => { if (a.diagnosis) argonSeen.add(a.round); });
+    logSeen = fresh ? 0 : s.log.length; argonSeen = new Set(); watchSeen = new Set(); doneSeen = !fresh && s.done; waiting = false;
+    if (!fresh) s.attempts.forEach(a => { if (a.diagnosis) argonSeen.add(a.round); if (a.argon) watchSeen.add(a.round); });
   }
   $("mass").innerHTML = `${Math.round(s.mass_lb)} lb <small>(${s.mass_kg} kg)</small>`;
   $("stage").textContent = s.stage; $("stage").className = "stage" + (s.done ? " done" : "");
@@ -155,16 +169,23 @@ async function tick() {
 
   for (; logSeen < s.log.length; logSeen++) {
     const line = s.log[logSeen].replace(/^\[[\d:]+\]\s*/, "");
-    if (/Argon rewrote/.test(line) || /^done:/.test(line)) continue;  // covered by the Argon bubble / final verdict
+    if (/Argon rewrote|Argon watches|rendering video/.test(line) || /^done:/.test(line)) continue;  // covered by the Argon bubble / final verdict
     const m = line.match(/physics scorer says (PASS|FAIL)(.*)/);
-    post("MuJoCo physics", line, m ? m[1] : "sys");
+    post(m || /MuJoCo/.test(line) ? "MuJoCo physics" : "Lift Lab", line.replace(/^round (\d+): /, (_, n) => `Attempt ${+n + 1}: `), m ? m[1] : "sys");
     if (m) say(`Attempt result: ${m[1] === "PASS" ? "pass" : "fail" + m[2].replace(/[:()<]/g, " ")}`);
+  }
+  for (const a of s.attempts) {
+    if (a.argon && !watchSeen.has(a.round)) {
+      watchSeen.add(a.round);
+      post("Gemini 4 Argon", `Watching ${a.argon.videos.length} video${a.argon.videos.length > 1 ? "s" : ""} of the robot plus the physics telemetry for ${a.argon.evidence.join(", ")}. Diagnosing…`, "argon");
+      say("Argon is watching the video.");
+    }
   }
   for (const a of s.attempts) {
     if (a.diagnosis && !argonSeen.has(a.round)) {
       argonSeen.add(a.round);
       const pts = firstPoints(a.diagnosis);
-      post(`Gemini 4 Argon · watched ${a.videos_seen ?? 1} video(s)`, pts + "\n\nRewrote the controller; re-testing now.", "argon");
+      post(`Gemini 4 Argon · watched ${a.videos_seen ?? 1} video(s)`, pts + `\n\nRewrote ${a.argon ? a.argon.lines_changed + " lines of" : ""} the controller; re-testing now.`, "argon");
       say("Argon's diagnosis. " + pts.split("\n")[0]);
     }
   }

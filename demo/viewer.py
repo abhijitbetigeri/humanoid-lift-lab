@@ -66,7 +66,7 @@ def main():
                 except Exception:  # noqa: BLE001
                     pass
             v.sync()
-            time.sleep(1 / 60)
+            time.sleep(1 / 30)  # 30 fps is smooth enough and leaves CPU for the physics trials
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ Output: runs/live/<timestamp>_m<mass>/round_<k>/{controller.py, trial/, video.mp
 from __future__ import annotations
 
 import argparse
+import difflib
 import concurrent.futures as cf
 import functools
 import http.server
@@ -161,9 +162,17 @@ def main(argv=None):
                 vids.append(mp4)
                 labels.append(f"{tag}: {a.mass:g} kg, {prev['verdict'][:120]} "
                               "(left: hero 3/4 view, right: side profile; video time = sim time)")
+        # what Argon is given, shown on the page while it thinks
+        att["argon"] = {"status": "watching", "videos": labels, "started": time.time(),
+                        "evidence": [f"{x['mass_kg'] * 2.20462:.0f} lb: {verdict(x)}" for x in trials]}
+        st.save()
+        old_code = code
         critique, code = argon.critique_and_fix(code, trials, vids, use_video=bool(vids), history=history,
                                                 task_md=prompts.TASK_MD, api_md=prompts.api_md(), video_labels=labels)
         att["videos_seen"] = len(vids)
+        diff = list(difflib.unified_diff(old_code.splitlines(), code.splitlines(), "before", "Argon's rewrite", n=1, lineterm=""))
+        att["argon"].update(status="done", seconds=round(time.time() - att["argon"]["started"]), diff="\n".join(diff[2:400]),
+                            lines_changed=sum(1 for l in diff[2:] if l[:1] in "+-" and l[:3] not in ("+++", "---")))
         (rd / "critique.md").write_text(critique + "\n")
         diag, _, changes = critique.partition("## Changes")
         att.update(diagnosis=diag.replace("## Diagnosis", "").strip(), changes=changes.strip(), status="done")
