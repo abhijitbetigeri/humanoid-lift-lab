@@ -74,24 +74,28 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
 <main>
   <div class="eyebrow">Gemini 4 Argon hackathon</div>
   <h1>Humanoid Lift Lab</h1>
-  <p class="lede">Gemini 4 Argon writes a whole-body lift controller for a humanoid, runs it in MuJoCo on totes from 5 to 40 kg,
-    watches the rendered video of each attempt, explains what went wrong and rewrites the controller.
+  <p class="lede">Humanoids that lift and shift: boxes, stock and furniture parts for small businesses and households, in tight,
+    crowded spaces where getting people to help is hard. Every load is different, and nobody is on site to re-tune the robot.
+    Gemini 4 Argon does that job in simulation: it takes the robot's deployed lift controller, runs it in MuJoCo on boxes from 11 to 88 lb,
+    watches the rendered video of each attempt, explains what went wrong and rewrites the controller until physics passes every load.
     A hidden physics scorer grades every round; the critic never scores itself.</p>
+  <p class="lede">The point is to find and fix the failures in simulation first: a tipped robot or a dropped 60 lb box costs nothing in MuJoCo,
+    so a controller reaches the real robot, in a real shop or home, only after physics has shown it holds.</p>
   <p class="note" id="gen"></p>
 
   <div class="tiles" id="tiles"></div>
 
-  <h2>Success vs tote mass</h2>
-  <p class="note">One trial per mass per round. A pass means the tote rises at least 0.45 m and is held 3 s, the robot stays up,
+  <h2>Success vs box weight</h2>
+  <p class="note">One trial per mass per round. A pass means the box rises at least 0.45 m and is held 3 s, the robot stays up,
     and the mean balance assist stays within <span id="budget">60</span> N. Grey dashed: textbook baseline. Green dashed: hand-written reference controller (shows the task can be solved).</p>
-  <div class="panel"><div class="chartbox"><canvas id="massChart" aria-label="Success rate by tote mass"></canvas></div></div>
+  <div class="panel"><div class="chartbox"><canvas id="massChart" aria-label="Success rate by box weight"></canvas></div></div>
 
   <h3>Every round, every mass</h3>
   <p class="note">Hover or tap a cell for the scorer's reason and the mean balance assist.</p>
   <div class="panel matrix-wrap"><table class="matrix" id="matrix"></table></div>
 
-  <h2>Heaviest tote lifted, by round</h2>
-  <p class="note">0 kg means no mass passed that round.</p>
+  <h2>Heaviest box lifted, by round</h2>
+  <p class="note">0 lb means no weight passed that round.</p>
   <div class="panel"><div class="chartbox"><canvas id="roundChart" aria-label="Max liftable mass per round"></canvas></div></div>
 
   <h2>Round 0 vs final round</h2>
@@ -110,14 +114,23 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
       <li><b>Generic humanoid, scaled torques.</b> The body is the Unitree G1 model from MuJoCo Menagerie, with joint torques scaled up to the
         Unitree H1-2 / Boston Dynamics Atlas class (hip 320 N·m, knee 400 N·m, shoulder 150 N·m). A stock G1 cannot do this task:
         ResMimic (<a href="https://arxiv.org/abs/2510.05070">arXiv 2510.05070</a>) reports a wrist limit of about 2.5 kg. For scale, Atlas is specified at
-        30 kg sustained and 50 kg brief. So read this as a generic warehouse-class humanoid, not a G1 claim.</li>
-      <li><b>In-place lift only.</b> The robot squats, grips and stands up with the tote. No walking, no carrying, no placing.</li>
-      <li><b>Physics scores, not the critic.</b> Success comes from the simulator (tote rise, hold time, fall, drop, mean balance assist). Argon's
+        30 kg sustained and 50 kg brief. So read this as a generic full-size humanoid, not a G1 claim.</li>
+      <li><b>In-place lift only.</b> The robot squats, grips and stands up with the box. No walking, no carrying, no placing.</li>
+      <li><b>Physics scores, not the critic.</b> Success comes from the simulator (box rise, hold time, fall, drop, mean balance assist). Argon's
         critique has no effect on the score.</li>
       <li><b>Balance assist.</b> A PD force on the pelvis keeps the early rounds from falling over at once; its mean magnitude is recorded and capped at 60 N
         for a pass, so a controller cannot lean on it.</li>
-      <li><b>Small sample.</b> One seed, one trial per mass, a few rounds per arm. Treat differences of one mass step as noise.</li>
-      <li><b>Assumed friction.</b> Tote μ = 0.8, palm 0.85–1.0, the upper end of rubber on plastic; no published value was found.</li>
+      <li><b>Result.</b> The deployed controller lifted 22–88 lb but dropped the light 11 lb box. Both arms adapted it to pass all eight loads (11–88 lb) in four rounds:
+        video arm $0.26 of Argon calls, text-only arm $0.18. The video arm made partial progress sooner (3 loads passing at round 2 vs 0), but both ended at 8/8,
+        so with one seed we do not claim video beats text on this task.</li>
+      <li><b>From scratch is harder.</b> Starting instead from a textbook stoop-lift controller, the video arm ran eight rounds and the text-only arm six
+        (the rest were still running at publish time): the box started rising, but never within the 60 N balance-assist budget, so 0 passes in either arm. Building a balanced whole-body lift from nothing needs more rounds than we ran.</li>
+      <li><b>Keep-best loop.</b> Both arms start from the same controller. If a rewrite scores worse than the best controller so far
+        (passes first, then partial credit for box rise), Argon is told it was discarded and revises the best one again. The chart shows every round as scored.</li>
+      <li><b>Solver checks.</b> MuJoCo runs the implicit integrator with a no-slip pass so a held box cannot creep through the grip numerically.
+        Any trial that still went unstable is reported with its physical cause (fell, dropped), never silently passed; videos stop 1.5 s after a fall.</li>
+      <li><b>Small sample.</b> One seed, one trial per mass, eight rounds per arm. Treat differences of one mass step as noise.</li>
+      <li><b>Assumed friction.</b> Box μ = 0.8, palm 0.85–1.0, the upper end of rubber on plastic; no published value was found.</li>
       <li><b>Related work.</b> NVlabs ASPIRE (<a href="https://arxiv.org/abs/2607.00272">arXiv 2607.00272</a>) also has an LLM refine robot skill code in simulation,
         but for a tabletop arm and without diagnosing physics from video. Payload-robust legged control is usually learned with mass randomization
         plus RL (RMA, Walk These Ways); here the output is a short controller a person can read.</li>
@@ -133,7 +146,7 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
   const KG2LB = 2.20462;
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const fmtKg = m => m == null ? "none" : `${m} kg (${Math.round(m * KG2LB)} lb)`;
+  const fmtKg = m => m == null ? "none" : `${Math.round(m * KG2LB)} lb (${m} kg)`;
 
   // Minimal Markdown: headings, lists, bold, italics, inline code, fenced code, paragraphs.
   function md(src) {
@@ -223,12 +236,12 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
     };
     new Chart(document.getElementById("massChart"), {
       type: "line",
-      data: { labels: masses.map(m => [`${m} kg`, `${Math.round(m * KG2LB)} lb`]), datasets: ds },
+      data: { labels: masses.map(m => [`${Math.round(m * KG2LB)} lb`, `${m} kg`]), datasets: ds },
       options: {
         maintainAspectRatio: false, spanGaps: true, interaction: { mode: "nearest", intersect: false },
         scales: {
           y: { min: -0.1, max: 1.1, title: { display: true, text: "Success rate" }, ticks: { stepSize: 0.5, callback: v => (v >= 0 && v <= 1 && Math.abs(v * 2 - Math.round(v * 2)) < 1e-6) ? Math.round(v * 100) + "%" : "" } },
-          x: { title: { display: true, text: "Tote mass" } }
+          x: { title: { display: true, text: "Box weight" } }
         },
         plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } }, tooltip: { callbacks: { label: tip } } }
       }
@@ -239,7 +252,7 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
     const cell = (r) => !r ? `<span class="cell na" title="no data">·</span>`
       : `<span class="cell ${r.success ? "ok" : "no"}" title="${esc((r.success ? "PASS" : "FAIL: " + (r.fail_reason || "")) + " | mean assist " + (r.mean_assist_n ?? "?") + " N | rise " + (r.box_rise_m ?? "?") + " m")}">${r.success ? "pass" : "fail"}</span>`;
     const pct = x => x == null ? "" : Math.round(x * 100) + "%";
-    rowsHtml.push("<tr><th>Run</th>" + masses.map(m => `<th>${m} kg<br><span class="note">${Math.round(m * KG2LB)} lb</span></th>`).join("") + "<th>Pass</th></tr>");
+    rowsHtml.push("<tr><th>Run</th>" + masses.map(m => `<th>${Math.round(m * KG2LB)} lb<br><span class="note">${m} kg</span></th>`).join("") + "<th>Pass</th></tr>");
     if (B) rowsHtml.push(`<tr><td>Textbook baseline</td>${masses.map(m => `<td>${cell(B.per_mass[String(m)])}</td>`).join("")}<td>${pct(B.pass_rate)}</td></tr>`);
     if (R) rowsHtml.push(`<tr><td>Reference controller</td>${masses.map(m => `<td>${cell(R.per_mass[String(m)])}</td>`).join("")}<td>${pct(R.pass_rate)}</td></tr>`);
     for (const [key, a, label] of [["video", V, "Video arm"], ["text", T, "Text arm"]]) {
@@ -267,12 +280,12 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
       data: { labels: rlabels, datasets: rds },
       options: {
         maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
-        scales: { y: { min: 0, max: 45, title: { display: true, text: "Heaviest pass (kg)" }, ticks: { stepSize: 5, callback: v => `${v} kg / ${Math.round(v * KG2LB)} lb` } } },
+        scales: { y: { min: 0, max: 45, title: { display: true, text: "Heaviest pass" }, ticks: { stepSize: 5, callback: v => `${Math.round(v * KG2LB)} lb` } } },
         plugins: { legend: { position: "bottom", labels: { usePointStyle: true, boxWidth: 8 } },
           tooltip: { callbacks: { label: ctx => {
             const a = ctx.dataset._a; const r = a && a.rounds[ctx.dataIndex];
             if (a && (!r || r.status !== "done")) return `${ctx.dataset.label}: running…`;
-            const v = ctx.raw; return `${ctx.dataset.label}: ${v ? v + " kg" : "none"}` + (r && r.pass_rate != null ? ` · pass ${Math.round(r.pass_rate * 100)}%` + (r.mean_assist_n != null ? ` · assist ${r.mean_assist_n.toFixed(0)} N` : "") : "");
+            const v = ctx.raw; return `${ctx.dataset.label}: ${v ? Math.round(v * KG2LB) + " lb (" + v + " kg)" : "none"}` + (r && r.pass_rate != null ? ` · pass ${Math.round(r.pass_rate * 100)}%` + (r.mean_assist_n != null ? ` · assist ${r.mean_assist_n.toFixed(0)} N` : "") : "");
           } } } }
       }
     });
@@ -292,7 +305,7 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
       ms.sort((a, b) => a - b);
       if (!ms.includes(selMass)) selMass = ms[ms.length - 1];
       segArm.innerHTML = armsWithVids.map(k => `<button data-a="${k}" aria-pressed="${k === selArm}">${k === "video" ? "Video arm" : "Text arm"}</button>`).join("");
-      segMass.innerHTML = ms.map(m => `<button data-m="${m}" aria-pressed="${m === selMass}">${m} kg / ${Math.round(m * KG2LB)} lb</button>`).join("");
+      segMass.innerHTML = ms.map(m => `<button data-m="${m}" aria-pressed="${m === selMass}">${Math.round(m * KG2LB)} lb / ${m} kg</button>`).join("");
       const rs = [...new Set(mine.filter(v => v.mass_kg === selMass).map(v => v.round))].sort((a, b) => a - b);
       const a = arms[selArm];
       const pick = rs.length > 1 ? [rs[0], rs[rs.length - 1]] : rs;
@@ -317,7 +330,7 @@ footer { color: var(--muted); font-size: .82rem; margin-top: 48px; border-top: 1
     if (!V) cbox.innerHTML = `<div class="panel note">Video arm not started.</div>`;
     else cbox.innerHTML = V.rounds.map(r => {
       const head = `Round ${r.round}` + (r.status === "done"
-        ? ` · ${r.pass_rate != null ? Math.round(r.pass_rate * 100) + "% pass" : ""} · heaviest ${r.max_mass_passed != null ? r.max_mass_passed + " kg" : "none"}${r.mean_assist_n != null ? " · mean assist " + r.mean_assist_n.toFixed(0) + " N" : ""}`
+        ? ` · ${r.pass_rate != null ? Math.round(r.pass_rate * 100) + "% pass" : ""} · heaviest ${r.max_mass_passed != null ? Math.round(r.max_mass_passed * KG2LB) + " lb" : "none"}${r.mean_assist_n != null ? " · mean assist " + r.mean_assist_n.toFixed(0) + " N" : ""}`
         : ` · <span class="status ${r.status === "running" ? "running" : ""}">${r.status}</span>`);
       const body = r.critique ? `<div class="md">${md(r.critique)}</div>`
         : `<p class="note">${r.status === "done" ? (r.round === V.rounds.length - 1 ? "Final round: scored, no further critique." : "Critique not written yet (running…).") : "Running…"}</p>`;

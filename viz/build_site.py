@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "runs"
 VIZ = ROOT / "viz"
 VID_OUT = VIZ / "assets" / "videos"
-ARMS = ["video", "text"]
-REFS = {"baseline": "w1_baseline_v3", "reference": "w1_reference_v3"}
+ARMS = {"video": "video_adapt", "text": "text_adapt"}  # page arm key -> run dir: adapt the deployed (reference) controller, keep-best
+REFS = {"baseline": "w1_baseline_v4", "reference": "w1_reference_v4"}
 DEFAULT_MASSES = [5, 10, 15, 20, 25, 30, 35, 40]
 VIDEO_BUDGET_MB = 45.0
 VIDEO_RE = re.compile(r"^m(\d+)_grid\.mp4$")  # skips *.partial.writing-*.mp4
@@ -82,7 +82,7 @@ def stats(pm):
 
 
 def build_arm(arm):
-    d = RUNS / arm
+    d = RUNS / ARMS[arm]
     cfg = load_json(d / "config.json") or {}
     summ = load_json(d / "summary.json") or {}
     summ_rounds = {r.get("round"): r for r in summ.get("rounds", [])}
@@ -156,7 +156,7 @@ def pick_videos(arms):
 
 
 def main():
-    arms = [build_arm(a) for a in ARMS if (RUNS / a).is_dir()]
+    arms = [build_arm(a) for a in ARMS if (RUNS / ARMS[a]).is_dir()]
     refs = {k: build_ref(k, v) for k, v in REFS.items()}
 
     VID_OUT.mkdir(parents=True, exist_ok=True)

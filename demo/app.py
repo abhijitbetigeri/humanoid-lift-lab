@@ -35,7 +35,7 @@ def parse(text: str):
     t = text.lower()
     for w in sorted(WORDS, key=len, reverse=True):
         t = re.sub(rf"\b{w}\b", str(WORDS[w]), t)
-    rounds = 2
+    rounds = 3
     m = re.search(r"(\d+)\s*(?:rounds?|tries|attempts|iterations)", t)
     if m:
         rounds = max(1, min(4, int(m.group(1))))
@@ -61,7 +61,7 @@ def start(kg: float, rounds: int) -> str:
         log = open(LIVE / "last_run.log", "w")
         _proc = subprocess.Popen([sys.executable, "-m", "demo.live", "--mass", f"{kg:g}", "--rounds", str(rounds),
                                   "--no-server"], cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
-    return (f"Starting: a {kg * 2.20462:.0f} lb box ({kg:g} kg), up to {rounds} Argon fix round(s). "
+    return (f"Starting: {kg * 2.20462:.0f} lb box ({kg:g} kg), up to {rounds} Argon fix round(s). "
             "The robot tries it first, then Argon watches the video and rewrites the controller.")
 
 
