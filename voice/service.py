@@ -5,14 +5,14 @@ import base64
 import binascii
 import json
 import math
-import os
 from pathlib import Path
 import re
+
+from voice.evidence import RUNS, metadata, round_evidence
 
 ROOT = Path(__file__).resolve().parents[1]
 ARGON_MODEL = 'gemini-4-argon'
 TTS_MODEL = 'gemini-3.8-flash-tts'
-RUNS = {'memory_text': 'Memory-assisted pilot', 'video': 'Video feedback', 'text': 'Text feedback'}
 AUDIO_TYPES = {'audio/webm', 'audio/mp4', 'audio/wav', 'audio/ogg', 'audio/mpeg', 'audio/mp3', 'audio/flac'}
 MAX_AUDIO = 3 * 1024 * 1024
 
@@ -29,18 +29,24 @@ def read_json(path, fallback=None):
 
 
 def available_runs(root=ROOT):
-    return [{'id': name, 'label': label,
-             'rounds': [r['round'] for r in read_json(Path(root) / 'runs' / name / 'summary.json', {}).get('rounds', [])
-                        if isinstance(r.get('round'), int)]} for name, label in RUNS.items()
-            if (Path(root) / 'runs' / name / 'summary.json').is_file()]
+    output = []
+    for name, label in RUNS.items():
+        meta = metadata(root, name)
+        if not meta or meta['config'].get('stub') is not False or meta['config'].get('split') in ('heldout', 'evaluation', 'test'):
+            continue
+        rounds = [r['round'] for r in meta['summary'].get('rounds', []) if isinstance(r.get('round'), int)]
+        if rounds:
+            output.append({'id': name, 'label': label, 'rounds': rounds, 'origin': meta['origin']})
+    return output
 
 
 def build_context(run='memory_text', round_choice='best', mass=None, root=ROOT):
     if run not in RUNS:
         raise InputError('Choose one of the available runs.')
-    directory = Path(root) / 'runs' / run
-    config = read_json(directory / 'config.json', {})
-    summary = read_json(directory / 'summary.json', {})
+    meta = metadata(root, run)
+    if meta is None:
+        raise InputError('This run has no available evidence.')
+    config, summary = meta['config'], meta['summary']
     if config.get('stub') is not False:
         raise InputError('This run is not configured for real simulation.')
     if config.get('split') in ('heldout', 'evaluation', 'test'):
@@ -59,8 +65,8 @@ def build_context(run='memory_text', round_choice='best', mass=None, root=ROOT):
         selected = next((r for r in rounds if r['round'] == number), None)
         if selected is None:
             raise InputError('That round has not completed.')
-    rd = directory / f'round_{selected["round"]}'
-    trials = read_json(rd / 'trials.json', [])
+    evidence = round_evidence(root, run, selected['round'], meta)
+    trials = evidence.get('trials', [])
     if not isinstance(trials, list):
         raise InputError('Trial results are not available.')
     if mass not in (None, '', 'all'):
@@ -77,21 +83,15 @@ def build_context(run='memory_text', round_choice='best', mass=None, root=ROOT):
     keys = ('mass_kg', 'success', 'box_rise_m', 'held_s', 'mean_assist_n', 'max_assist_n',
             'peak_tau_frac', 'max_slip_m', 'fell', 'dropped', 'fail_reason', 'telemetry')
     facts = [{k: t[k] for k in keys if k in t} for t in trials]
-    try:
-        code = (rd / 'controller.py').read_text()[:8000]
-    except OSError:
-        code = None
-    try:
-        critique = (rd / 'critique.md').read_text()[:2500]
-    except OSError:
-        critique = None
     return {'run': run, 'selected_round': selected['round'], 'mass_filter': mass,
+            'evidence_origin': meta['origin'], 'captured_at': meta['captured_at'],
+            'environment_sha256': config.get('environment_sha256'),
             'scope': 'Development results in an assisted, modified-G1 simulation; not hardware capability.',
             'memory_caveat': 'Memory pilot received a hand-written expert reference; it is not independent strategy discovery.',
             'success_rule': 'Rise >=0.45m; hold >=3s; no fall/drop/error; mean assistance <=60N.',
             'round_summaries': [{k: r.get(k) for k in ('round', 'pass_rate', 'passed', 'max_mass_passed', 'mean_assist_n')}
                                 for r in rounds],
-            'trials': facts, 'controller': code, 'model_critique_hypothesis_only': critique,
+            'trials': facts, 'controller': evidence.get('controller'), 'model_critique_hypothesis_only': evidence.get('critique'),
             'sources': [f'runs/{run}/summary.json', f'runs/{run}/round_{selected["round"]}/trials.json']}
 
 

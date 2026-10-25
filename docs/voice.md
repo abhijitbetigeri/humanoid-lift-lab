@@ -10,6 +10,23 @@ Open **http://127.0.0.1:8791/**. The companion serves the existing results page 
 the separate live simulation demo on port 8790. It is a local application; the static Render deployment cannot
 run these server endpoints. No public hosting configuration was changed.
 
+The saved-evidence panel works without a model call. The selector includes completed final/adaptation runs and
+labels the earlier memory pilot separately. Local run files take precedence. If ignored `runs/` files are absent
+in a fresh clone, the companion uses committed `data/voice-evidence/snapshot.json` and labels it as a packaged
+snapshot. That snapshot covers the earlier memory pilot only. Different runs may use different simulator setups;
+compare rounds within a run unless environment equivalence has been established.
+
+For a fresh clone without a Python environment, the voice-only setup is:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r voice/requirements.txt
+.venv/bin/python -m voice.app
+```
+
+Set `GEMINI_API_KEY` in the server environment or a local `.env` before asking new questions. The saved-evidence
+panel does not need a key. No MuJoCo installation is needed for voice-only inspection of the packaged snapshot.
+
 Choose an experiment, round, and optional payload. Type a question or record up to 20 seconds, stop, then select
 **Ask Argon**. The recording is sent only on submission. A recognized transcript and text explanation appear first;
 spoken playback follows. Autoplay can be disabled, and audio controls allow replay without another API call.
@@ -48,6 +65,23 @@ If Google TTS fails, the grounded text answer remains available. If Argon fails,
 than an invented answer. The saved 25 kg preview is an existing simulation image, not video observed during the
 voice conversation. Best-round answers are labelled with the actual selected round; final-round comparisons use
 the supplied round summaries.
+
+## Portable evidence and demo fallback
+
+`data/voice-evidence/` contains saved development evidence, source-file hashes, and a preview. It is not a new
+execution. Export requires explicit real/development metadata and agreement between trial outcomes and summary
+pass rates. Private config fields and absolute trial directories are excluded. A local stub, held-out split, or
+corrupt config cannot silently fall back to a friendlier packaged result.
+
+Refresh after the selected development run's files settle:
+
+```bash
+.venv/bin/python -m voice.export_evidence --runs memory_text
+```
+
+Legacy runs without split labels can be inspected locally but cannot be exported. Assign splits prospectively
+through the evaluation workflow rather than relabelling old results to bypass this check. See
+`docs/demo-runbook.md` for the 60-second walkthrough and saved-results fallback.
 
 ## Verification
 

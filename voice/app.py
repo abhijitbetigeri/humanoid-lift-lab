@@ -11,7 +11,7 @@ from pathlib import Path
 import secrets
 import threading
 import time
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from voice.service import ARGON_MODEL, TTS_MODEL, ROOT, GeminiVoice, InputError, available_runs, build_context, validate_request
 
@@ -22,8 +22,9 @@ MAX_BODY = 4 * 1024 * 1024 + 16384
 def static_path(path, root=ROOT):
     path = unquote(urlparse(path).path)
     if path == '/preview.png':
-        return Path(root) / 'runs/memory_text/preview/round1_25kg.png'
-    if path in ('/', '/index.html', '/client.js', '/style.css'):
+        local = Path(root) / 'runs/memory_text/preview/round1_25kg.png'
+        return local if local.is_file() else Path(root) / 'data/voice-evidence/preview.png'
+    if path in ('/', '/index.html', '/client.js', '/style.css', '/evidence.css'):
         return UI / ('index.html' if path == '/' else path.lstrip('/'))
     if path.startswith('/results/'):
         base = (Path(root) / 'viz').resolve()
@@ -116,6 +117,18 @@ def handler_factory(jobs, token, root=ROOT):
             if path == '/api/bootstrap':
                 return self.respond(200, {'token': token, 'runs': available_runs(root),
                     'models': {'reasoning': ARGON_MODEL, 'speech': TTS_MODEL}, 'max_recording_seconds': 20})
+            if path == '/api/evidence':
+                query = parse_qs(urlparse(self.path).query)
+                try:
+                    context = build_context(query.get('run', ['memory_text'])[0], query.get('round', ['best'])[0],
+                                            query.get('mass', ['all'])[0], root=root)
+                    view = {k: context[k] for k in ('run', 'selected_round', 'evidence_origin', 'captured_at',
+                            'environment_sha256', 'round_summaries', 'sources', 'scope')}
+                    view['trials'] = [{k: t.get(k) for k in ('mass_kg', 'success', 'box_rise_m', 'held_s', 'fail_reason')}
+                                      for t in context['trials']]
+                    return self.respond(200, view)
+                except InputError as exc:
+                    return self.respond(400, {'error': str(exc)})
             if path.startswith('/api/jobs/'):
                 row = jobs.get(path.rsplit('/', 1)[-1])
                 return self.respond(200 if row else 404, row or {'error': 'This answer has expired. Ask again.'})

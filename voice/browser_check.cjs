@@ -30,6 +30,14 @@ const assert = require('node:assert/strict');
   try {
     await page.goto(process.env.LIFT_LAB_VOICE_URL || 'http://127.0.0.1:8791/', {waitUntil:'networkidle'});
     await page.waitForFunction(() => document.getElementById('connection').textContent === 'Ready');
+    await page.waitForFunction(() => document.getElementById('evidence-stats').textContent.includes('75%'));
+    await page.locator('#round').selectOption('2');
+    await page.waitForFunction(() => document.getElementById('evidence-stats').textContent.includes('12.5%'));
+    await page.getByRole('button', {name:'Refresh', exact:true}).click();
+    await page.waitForFunction(() => document.getElementById('round').value === '2' && document.getElementById('evidence-stats').textContent.includes('12.5%'));
+    assert.equal(submitted.length,0,'Inspecting or refreshing evidence must not trigger paid calls');
+    await page.locator('#round').selectOption('best');
+    await page.waitForFunction(() => document.getElementById('evidence-stats').textContent.includes('75%'));
     await page.screenshot({path:'runs/voice-preview-desktop.png', fullPage:true});
     await page.getByRole('button', {name:'Why did 40 kg fail?'}).click();
     assert.equal(submitted.length,0,'Example selection must not trigger paid requests');
@@ -57,7 +65,8 @@ const assert = require('node:assert/strict');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Mobile must not overflow');
     await page.screenshot({path:'runs/voice-preview-mobile.png', fullPage:true});
     assert.deepEqual(errors,[]);
-    const report = {status:'passed',paid_calls:0, checks:['ready state','example does not submit',
+    const report = {status:'passed',paid_calls:0, checks:['ready state','saved evidence panel','best versus final scores',
+      'refresh preserves selection without model calls','example does not submit',
       'typed question','fake-microphone recording','native audio request body','spoken playback controls',
       'TTS failure preserves text','mobile layout','no JavaScript exceptions']};
     fs.writeFileSync('runs/voice-browser-check.json',JSON.stringify(report,null,2));

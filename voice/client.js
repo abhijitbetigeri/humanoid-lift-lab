@@ -3,6 +3,7 @@
   const $ = id => document.getElementById(id);
   let token = '', runOptions = [], busy = false, pendingMic = false, recorder = null, stream = null;
   let chunks = [], recording = null, recordingTimer = null, timerTick = null, startedAt = 0, audioUrl = null;
+  let evidenceRequest = 0;
   const setError = message => { $('error').textContent = message; $('error').hidden = !message; };
   const progress = message => { $('progress').textContent = message; $('progress').hidden = !message; };
   const micSupported = () => !!(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
@@ -11,13 +12,41 @@
     $('record').disabled = busy || pendingMic || !token || !micSupported();
     for (const id of ['run', 'round', 'mass', 'question']) $(id).disabled = busy || !token;
     $('discard').disabled = busy;
+    $('refresh-evidence').disabled = busy || pendingMic || recorder?.state === 'recording';
   }
   function setBusy(value) { busy = value; controls(); }
   function rounds() {
     const run = runOptions.find(r => r.id === $('run').value);
     $('round').replaceChildren(new Option('Best saved round', 'best'), ...(run?.rounds || []).map(r => new Option(`Round ${r}`, String(r))));
   }
+  async function savedEvidence() {
+    const request = ++evidenceRequest;
+    $('evidence-status').textContent = 'Loading saved results…';
+    $('evidence-stats').replaceChildren(); $('evidence-cases').replaceChildren();
+    try {
+      const query = new URLSearchParams({run:$('run').value, round:$('round').value, mass:$('mass').value});
+      const response = await fetch(`/api/evidence?${query}`);
+      const data = await response.json();
+      if (request !== evidenceRequest) return;
+      if (!response.ok) throw new Error(data.error || 'Saved evidence is unavailable.');
+      const row = data.round_summaries.find(r => r.round === data.selected_round);
+      $('evidence-status').textContent = `Round ${data.selected_round} · saved results`;
+      const rate = typeof row.pass_rate === 'number' ? `${Math.round(row.pass_rate*1000)/10}% passed` : 'No pass rate';
+      const maximum = row.max_mass_passed == null ? 'No successful payload' : `Up to ${row.max_mass_passed} kg`;
+      for (const text of [rate,maximum]) { const span=document.createElement('span'); span.textContent=text; $('evidence-stats').append(span); }
+      for (const trial of data.trials) {
+        const li = document.createElement('li');
+        li.textContent = `${trial.mass_kg} kg · ${trial.success ? 'PASS' : 'FAIL'}`;
+        li.className = trial.success ? 'case-pass' : 'case-fail';
+        li.title = trial.success ? `Rise ${trial.box_rise_m} m; held ${trial.held_s} s` : (trial.fail_reason || 'Saved failure');
+        $('evidence-cases').append(li);
+      }
+      const origin = data.evidence_origin === 'packaged-snapshot' ? `Packaged snapshot · ${new Date(data.captured_at).toLocaleString()}` : 'Local saved run';
+      $('evidence-provenance').textContent = `${origin}. Runs may use different setups; compare rounds within a run. These results remain available without a model call.`;
+    } catch (error) { if (request === evidenceRequest) $('evidence-status').textContent = error.message; }
+  }
   async function bootstrap() {
+    const previousRun = $('run').value, previousRound = $('round').value;
     try {
       const response = await fetch('/api/bootstrap');
       if (!response.ok) throw new Error('Could not connect to the local voice service.');
@@ -25,7 +54,10 @@
       token = data.token; runOptions = data.runs;
       if (!runOptions.length) throw new Error('No saved experiment results are available yet.');
       $('run').replaceChildren(...runOptions.map(r => new Option(r.label, r.id)));
-      rounds(); controls();
+      if (runOptions.some(r => r.id === previousRun)) $('run').value = previousRun;
+      rounds();
+      if ([...$('round').options].some(r => r.value === previousRound)) $('round').value = previousRound;
+      controls(); savedEvidence();
       $('connection').textContent = 'Ready'; $('connection').classList.add('ready');
       if (!micSupported()) $('record-status').textContent = 'Microphone recording is unavailable here. Type a question instead.';
     } catch (error) {
@@ -118,7 +150,10 @@
   $('ask-form').addEventListener('submit', ask);
   $('record').addEventListener('click', toggleRecord);
   $('discard').addEventListener('click', discard);
-  $('run').addEventListener('change', rounds);
+  $('run').addEventListener('change', () => { rounds(); savedEvidence(); });
+  $('refresh-evidence').addEventListener('click', bootstrap);
+  $('round').addEventListener('change', savedEvidence);
+  $('mass').addEventListener('change', savedEvidence);
   document.querySelectorAll('[data-question]').forEach(button => button.addEventListener('click', () => { if (!busy) { $('question').value = button.dataset.question; $('question').focus(); } }));
   $('question').addEventListener('keydown', event => { if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); $('ask-form').requestSubmit(); } });
   document.querySelector('figure img').addEventListener('error', event => { event.target.closest('figure').hidden = true; });

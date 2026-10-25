@@ -6,6 +6,7 @@
   <title>Lift Lab · Voice</title>
   <meta name="description" content="Ask spoken questions about saved humanoid lifting experiments and hear evidence-grounded explanations.">
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/evidence.css">
   <script src="/client.js" defer></script>
 </head>
 <body>
@@ -40,7 +41,9 @@
         <div id="empty" class="empty"><span class="empty-mark" aria-hidden="true">“</span><p>Start with a failure, a controller change,<br>or a comparison between rounds.</p></div>
       </section>
       <aside aria-labelledby="evidence-heading">
-        <div class="evidence-controls"><h2 id="evidence-heading">Choose the evidence</h2><label for="run">Experiment</label><select id="run" disabled><option>Loading saved runs…</option></select><div class="select-row"><div><label for="round">Round</label><select id="round"><option value="best">Best saved round</option></select></div><div><label for="mass">Payload</label><select id="mass"><option value="all">All payloads</option><option value="5">5 kg</option><option value="10">10 kg</option><option value="15">15 kg</option><option value="20">20 kg</option><option value="25">25 kg</option><option value="30">30 kg</option><option value="35">35 kg</option><option value="40">40 kg</option></select></div></div></div>
+        <div class="evidence-controls"><div class="section-head"><h2 id="evidence-heading">Choose the evidence</h2><button id="refresh-evidence" type="button">Refresh</button></div><label for="run">Experiment</label><select id="run" disabled><option>Loading saved runs…</option></select><div class="select-row"><div><label for="round">Round</label><select id="round"><option value="best">Best saved round</option></select></div><div><label for="mass">Payload</label><select id="mass"><option value="all">All payloads</option><option value="5">5 kg</option><option value="10">10 kg</option><option value="15">15 kg</option><option value="20">20 kg</option><option value="25">25 kg</option><option value="30">30 kg</option><option value="35">35 kg</option><option value="40">40 kg</option></select></div></div>
+          <section id="saved-evidence" class="saved-evidence" aria-live="polite" aria-label="Saved results without a model call"><p id="evidence-status">Loading saved results…</p><div id="evidence-stats"></div><ul id="evidence-cases"></ul><p id="evidence-provenance" class="muted"></p></section>
+        </div>
         <figure><img src="/preview.png" alt="A saved 25 kg simulation trial showing the humanoid holding the tote." width="960" height="720"><figcaption>A saved 25 kg trial · modified G1 simulation</figcaption></figure>
         <div class="scope"><h3>What the answer can establish</h3><p>Recorded lift outcomes, controller changes, and possible failure causes. These are assisted simulation development results, not hardware validation.</p><p class="muted">Answers by Argon. Spoken audio by Gemini TTS. Voice responses take a moment to prepare.</p></div>
       </aside>
