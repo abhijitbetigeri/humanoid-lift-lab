@@ -1,0 +1,28 @@
+Use case: infographic-diagram.
+Asset type: presentation-ready project story image for Humanoid Lift Lab, a hackathon robotics prototype. Generate a finished premium editorial infographic, wide 16:9 landscape, ideally 2560x1440 or higher. Opaque background.
+Primary request: Tell the complete story of an existing humanoid lifting controller failing, Gemini Argon using execution evidence to diagnose and revise its code, and the revised controller passing a deterministic simulation evaluation. Make this emotionally engaging and visually memorable at presentation distance.
+Art direction: sophisticated cinematic 3D robotics illustration combined with exceptionally clean Swiss editorial typography and restrained technical annotations. Deep midnight navy background, pale ivory type, warm amber failure accents, electric cyan reasoning accents and muted mint success accents. Precise, airy composition with strong contrast and generous negative space. No decorative AI brains, no giant abstract chip, no clutter, no fantasy hardware. Professional robotics research keynote quality.
+Composition: one coherent left-to-right story across three connected zones, not generic dashboard cards. A subtle continuous simulation floor grid connects the scene. At left, a compact gray-and-white G1-like humanoid with black joint mechanisms loses grip on a small tan tote, the tote falling toward the floor; restrained amber motion trail and failure marker. At center, a crisp, elegant Argon evidence-and-code workspace connected to the failed trajectory, showing a tiny video thumbnail, a telemetry curve and a readable single code edit. At right, the same robot with anatomically plausible articulated arms securely holds the same tote in front of its torso above the floor, stable feet, restrained mint lift-height and hold-time annotations. Everything is an illustrated simulation, not a photograph of a real robot. Draw the totes with side grasp contacts, not handles or welding. Avoid anthropomorphic robot facial expressions. Under the three zones, use a slim evidence band; under that, a compact companion-features line and a legible scope footnote.
+Text hierarchy: huge title at top left, small project name above it. All words must be correctly spelled, use the exact text below, and do not add invented claims or logos.
+Text (verbatim), placed in the following hierarchy:
+Small eyebrow: "HUMANOID LIFT LAB"
+Large headline: "From a failed lift to a verified fix."
+Subtitle: "Gemini Argon adapts a robot controller using simulation feedback."
+Left section label: "01  OBSERVE"
+Left short caption: "A working controller drops the light box."
+Center section label: "02  REPAIR"
+Center short caption: "Video + telemetry → diagnosis → revised Python"
+One clearly readable code line: "m_grip = max(10.5, m)"
+Right section label: "03  VERIFY"
+Right short caption: "MuJoCo executes. Fixed rules score."
+Next to right robot: "0.687 m rise" and "4.97 s hold"
+Evidence band primary large text: "7/8 → 8/8"
+Evidence band supporting text: "Tested loads: 5–40 kg · Four revision rounds"
+Evidence band second supporting text: "Video + telemetry and telemetry-only both reached 8/8."
+Compact companion line: "Evidence-linked skill memory · Voice Q&A · Inspectable code and results"
+Footer: "Modified, assisted simulation · Development cases · Hardware transfer not yet validated"
+Accuracy constraints: the result is reference-seeded controller adaptation, not training from scratch. Argon does not grade its own program. Do not claim video superiority, stock-G1 payload ratings, unassisted balance, physical hardware success, walking or carrying. Do not show humans in danger. The 0.687 m and 4.97 s annotations belong only to the successful right-hand lift. The result band must show 7/8 to 8/8, never 100% generalization. Keep footer readable but subordinate.
+Overall feel: make the audience immediately understand "see the failure, change the code, prove the improvement." One polished image, no mockup frame, no watermark.
+
+Final accuracy edit (built-in image_gen, reference: first generated image):
+Edit the supplied presentation infographic. Preserve the full image, its exact 16:9 landscape framing, all robots, typography, colors, composition, existing headline, result band and scope footer. Make ONLY this focused accuracy correction inside the central Argon workspace: change the chart title from "End-effector force (N)" to "Illustrative telemetry". Remove the numerical tick labels on both chart axes (200,100,0 and 0,1,2,3,4) and replace the "Time (s)" x-axis text with "Attempt timeline". Keep its two colored curves and failed/revised legend, but these should read as a schematic illustration rather than recorded measurements. Add a small clean label "CONCEPT VIEW" at the right end of the central workspace's Gemini Argon title bar. Remove invented line numbers 217, 218, 219 from the code panel, preserving the readable red/green code edit and all other content. Keep all project metrics elsewhere exactly unchanged: 7/8 → 8/8, 5–40 kg, Four revision rounds, 0.687 m rise, 4.97 s hold. No extra changes.

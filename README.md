@@ -6,6 +6,10 @@ The motivating use case is lift-and-shift work in small businesses, workshops an
 
 The current product is a controller-adaptation and debugging workbench for robotics engineers. Its central output is a revised, readable program together with the evidence used to evaluate it.
 
+![Humanoid Lift Lab: observe a failed lift, let Argon revise the controller, then verify the result in simulation.](submission/project-story.png)
+
+*Presentation illustration; robot artwork and telemetry curves are conceptual. Numerical outcomes come from the recorded development trials below. [Download the image](submission/project-story.png) · [Generation prompt](submission/story-image-prompt.txt).*
+
 ## Demo videos and links
 
 | | Link |

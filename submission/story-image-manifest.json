@@ -1,0 +1,16 @@
+{
+  "asset": "project-story.png",
+  "generator": "Built-in image_gen tool",
+  "type": "AI-generated conceptual project illustration; not a simulation screenshot",
+  "width": 1672,
+  "height": 941,
+  "sha256": "0d0ae01a392ac536f8d1e15b92ea677d6d9c30ca3e75bf8bbe4abe2a8c59dd09",
+  "bytes": 1817875,
+  "prompt_file": "story-image-prompt.txt",
+  "evidence": "results.json",
+  "notes": [
+    "Telemetry curves and robot artwork are illustrative.",
+    "7/8 to 8/8 is the recorded reference-seeded development comparison; both conditions reached 8/8.",
+    "Lift annotations round the video-arm 5 kg result: 0.6867 m and 4.966 s."
+  ]
+}
