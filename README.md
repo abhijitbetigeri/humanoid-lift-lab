@@ -15,10 +15,7 @@ The current product is a controller-adaptation and debugging workbench for robot
 | **Live demo, part 1**: a chat/voice request runs in MuJoCo, fails, and Argon watches the video and diagnoses it | https://www.loom.com/share/529241066a694e6c90bc78e6818e0f40 |
 | **Live demo, part 2**: Argon's rewrites are re-tested against the 11 lb box and the 33/66 lb regression checks | https://www.loom.com/share/c2def0c1658049b190d012b0ff24cce2 |
 | **Replay of the 15:52 live run that passed** (saved real results, labelled REPLAY on screen): 11 lb fixed in 4 attempts, two regressing rewrites discarded | https://www.loom.com/share/e5cbc5935e594e2cb92b87527f2c089a |
-| Submission answers | [submission/SUBMISSION.md](submission/SUBMISSION.md) |
 | Recorded results | [submission/results.json](submission/results.json) |
-| Implementation and judge Q&A | [submission/IMPLEMENTATION_QA.md](submission/IMPLEMENTATION_QA.md) |
-| Three-minute pitch | [submission/PITCH_3_MIN.md](submission/PITCH_3_MIN.md) |
 
 The Render site is static. The live demo (`demo.app`) and the voice companion (`voice.app`) are local Python services; see *Run locally*.
 
@@ -180,7 +177,7 @@ Google products used: Gemini 4 Argon, Gemini API/Interactions and Files API, Gem
 | [voice/](voice/) | Saved-evidence audio/text Q&A and speech generation |
 | [evals/](evals/) | Run audits, data collection, validation and memory pilot |
 | [viz/](viz/) | Static results site served by Render |
-| [submission/](submission/) | Prepared answers, final controllers, recorded results, demo video, pitch and Q&A |
+| [submission/](submission/) | Final controllers, recorded results and the demo video |
 | [docs/AGENT_CONTEXT.md](docs/AGENT_CONTEXT.md) | Shared architecture, experiment boundaries and agent handoff |
 
 ## What remains to validate
