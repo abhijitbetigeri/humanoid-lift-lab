@@ -1,13 +1,22 @@
 # Humanoid Lift Lab
 
-**Gemini Argon observes failed simulated lifts, diagnoses the behavior, rewrites a readable controller, and faces a deterministic physics score.**
+**Gemini 4 Argon fixes a humanoid's lift in simulation before deployment: it watches failed lifts in MuJoCo, diagnoses the physics, rewrites a readable controller, and a deterministic physics scorer decides whether the fix holds.**
 
-Warehouse loads change. Even a working lifting program can fail when its grip, clearance, or motion schedule no longer fits the payload. Lift Lab makes that adaptation process visible and measurable in MuJoCo.
+Humanoids can do the lift-and-shift work of small businesses, workshops and households: boxes, stock and furniture parts, often in cramped spaces where getting extra people to help is hard. Every load is different, and a lift tuned for one box can tip the robot or drop the next. There is no robotics engineer on site to re-tune it, and testing on the real robot risks broken boxes, damaged robots or injuries. Lift Lab finds and fixes those failures in simulation first, so the robot in the field only gets controllers that physics has already passed.
 
-[Watch/download the 60-second narrated demo](submission/humanoid-lift-lab-60s.mp4) · [Submission answers](submission/SUBMISSION.md) · [Recorded results](submission/results.json)
+## Demo videos and links
 
-Public landing page: https://humanoid-lift-lab.onrender.com/#demo. The embedded demo and direct MP4 are static assets;
-the local voice and live-simulation services still run separately.
+| | Link |
+| --- | --- |
+| **Results site** (every round, critique and video; embedded 60-second demo) | https://humanoid-lift-lab.onrender.com |
+| **60-second narrated demo** (submission video) | https://humanoid-lift-lab.onrender.com/assets/humanoid-lift-lab-60s.mp4 |
+| **Live demo, part 1**: a chat/voice request runs in MuJoCo, fails, and Argon watches the video and diagnoses it | https://www.loom.com/share/529241066a694e6c90bc78e6818e0f40 |
+| **Live demo, part 2**: Argon's rewrites are re-tested against the 11 lb box and the 33/66 lb regression checks | https://www.loom.com/share/c2def0c1658049b190d012b0ff24cce2 |
+| **Replay of the 15:52 live run that passed** (saved real results, labelled REPLAY on screen): 11 lb fixed in 4 attempts, two regressing rewrites discarded | https://www.loom.com/share/e5cbc5935e594e2cb92b87527f2c089a |
+| Submission answers | [submission/SUBMISSION.md](submission/SUBMISSION.md) |
+| Recorded results | [submission/results.json](submission/results.json) |
+
+The Render site is static. The live demo (`demo.app`) and the voice companion (`voice.app`) are local Python services; see *Run locally*.
 
 ## What it does
 
@@ -21,14 +30,14 @@ The simulator, scene, inverse kinematics, and motion primitives are supplied eng
 
 ## Recorded adaptation results
 
-Eight tested payloads: **5, 10, 15, 20, 25, 30, 35, 40 kg** (approximately 11–88 lb). Both conditions started from the same hand-written reference; the seed schedule was base seed 0 plus mass index.
+Eight tested loads: **11, 22, 33, 44, 55, 66, 77, 88 lb** (5–40 kg in steps of 5 kg). The hand-written reference lifted 22–88 lb but dropped the light 11 lb box. Both conditions started from the same hand-written reference; the seed schedule was base seed 0 plus mass index.
 
 | Condition | Initial controller | Round 4 controller |
 | --- | --- | --- |
 | Video + telemetry | 7/8 passes | **8/8 passes** |
 | Telemetry only | 7/8 passes | **8/8 passes** |
 
-Four revision rounds means five evaluated controller versions, including round 0. Both runs initially regressed before recovering. The video run's 5 kg case improved from a drop to a 0.6867 m rise held for 4.966 s. Final controller snapshots and recorded metrics are in [submission/](submission/).
+Four revision rounds means five evaluated controller versions, including round 0. Both runs initially regressed before recovering. The video run's 11 lb (5 kg) case improved from a drop to a 0.6867 m rise held for 4.966 s. Final controller snapshots and recorded metrics are in [submission/](submission/).
 
 **Scope:** these are development trials in a modified G1-based, assisted simulation. Joint strength is increased and assistance is explicitly budgeted. They are not stock-G1 hardware ratings or held-out generalization results. Since both conditions reached 8/8, this experiment does not establish video superiority. Earlier attempts from a weak baseline were unsuccessful; the working reference is an important prior.
 
@@ -59,7 +68,15 @@ Open http://127.0.0.1:8791/. The saved-evidence panel works without API calls an
 .venv/bin/python -m demo.app --no-viewer
 ```
 
-Open http://127.0.0.1:8790/ and enter an explicit request such as `try 5 kg`. The existing browser voice input can also supply the request. New repair attempts make paid Argon calls. Omit `--no-viewer` to launch the native MuJoCo viewer on the development Mac.
+Open http://127.0.0.1:8790/ and type or say a request such as `lift an 11 pound box` (a bare number means pounds; 11–88 lb is accepted). Each attempt also runs 33 and 66 lb regression checks; the page shows what Argon watched, its timestamped diagnosis and the code diff, and a keep-best rule discards rewrites that regress. Loads of 22–88 lb already pass with the deployed controller, so Argon only steps in at the edges (11 lb). New repair attempts make paid Argon calls, and a fix is not guaranteed within the default 3 rounds. Omit `--no-viewer` to launch the native MuJoCo viewer on the development Mac.
+
+**Replay a saved live run** (no new simulation or model calls; labelled REPLAY on the page), while `demo.app` is running:
+
+```bash
+.venv/bin/python -m demo.replay 155234_m5
+```
+
+Raw `runs/live/` is git-ignored, so this works on the machine that recorded the run.
 
 **Reproduce an adaptation condition in a new output directory:**
 
