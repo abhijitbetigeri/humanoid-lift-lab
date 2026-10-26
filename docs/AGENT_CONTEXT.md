@@ -1,6 +1,6 @@
 # Humanoid Lift Lab — shared agent handoff
 
-Reviewed 2026-10-25 against code commit `a67ea88` and the current saved artifacts. This file is a handoff, not a claim
+Reviewed 2026-10-25 against commit `11a6e22` and the current saved artifacts. This file is a handoff, not a claim
 that every binary asset or third-party dependency was audited. Recheck current code, logs and Git state before action.
 `docs/context-manifest.json` fingerprints the first-party source/evidence files used for this handoff.
 
@@ -28,6 +28,7 @@ Do not contact others or publish to new services on the user's behalf just becau
 | `loop/telemetry.py` | Summarizes trajectories into timestamped signals and phase histories. |
 | `loop/run_loop.py` | Batch mass sweeps and rewrite loop; `--arm video` vs `text`; optional `--keep-best` selects a prior controller using pass count plus partial lift progress. |
 | `demo/` | Local interactive payload request, trial/critic loop, native trajectory viewer and web progress UI. |
+| `demo/replay.py` | Newly added saved-live-run walkthrough, explicitly labelled replay; reuses recorded results/videos/critique/diffs with no new physics or model generation. |
 | `voice/` | Separate read-only native-audio questions about saved evidence; Argon answers and Gemini TTS speaks. |
 | `evals/` | Saved-run audit/collection, prospective development validation and separate memory pilot. |
 | `loop/skill_memory.py` | Optional explicit admission/retrieval of guidance associated with verified development evidence. Not automatically used by the normal batch/live loops. |
@@ -83,9 +84,14 @@ The earlier memory pilot belongs to a different physics snapshot; do not join it
   exact code diff, checks and elapsed time. The native viewer replays completed trajectories, not real-time hardware.
 - Keep-best can restore the strongest attempt for another rewrite; it does not guarantee that the final attempt
   passes. A last-iteration failure can still be the displayed final result.
-- At review time `runs/live/state.json` referred to **162353_m5**, completed with a fall after four attempts;
-  anchor checks were 15 and 30 kg. This separate live trial is not the 8/8 batch result. Recheck state before a demo.
-  For a dependable pitch, use the recorded successful batch footage rather than promise an arbitrary live repair.
+- Saved live run **155234_m5** passed on attempt 4: 5 kg rose 0.6942 m and held 4.8 s; 15 and 30 kg checks
+  also passed. Attempts 2 and 3 regressed and were not retained as the next starting point. Another saved live
+  run, **162353_m5**, ended in a fall after four attempts. These are separate from the 8/8 batch result.
+- At this review `runs/live/state.json` was a labelled replay of **155234_m5**. Recheck state before a demo;
+  a successful saved example does not guarantee an arbitrary new live repair.
+- `python -m demo.replay 155234_m5 --speed 1.0` can replay a saved live attempt through the existing page/viewer.
+  It writes `runs/live/state.json`, so do not run it concurrently with an actual live repair. A replay's wait times
+  are presentation timing, not a new measured API latency; recorded latency fields come from the original call log.
 
 ## Voice, memory, evidence, deployment
 
@@ -137,3 +143,5 @@ really exercised Google TTS -> Argon audio -> TTS. No need to repeat paid calls 
 Useful checks: `python -m unittest discover -s tests -q`, `node --check voice/client.js`, and compare the manifest
 hashes to current files. Graphics may require unsandboxed macOS access. Render workers are capped to avoid loading
 the laptop excessively; even one replay render took about 270 s. Preserve other agents' running tasks.
+
+Pitch: `submission/PITCH_3_MIN.md`. Implementation and likely judge questions: `submission/IMPLEMENTATION_QA.md`.

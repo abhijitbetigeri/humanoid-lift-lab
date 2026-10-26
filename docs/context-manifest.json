@@ -1,6 +1,6 @@
 {
-  "anchor_commit": "b3767447a098cb9ed99e3ab1c3bf3ba5898bfe6d",
-  "captured_at_utc": "2026-10-25T23:52:21.393830+00:00",
+  "anchor_commit": "11a6e22318013287899b451d2e2e261634e122eb",
+  "captured_at_utc": "2026-10-26T00:17:09.707010+00:00",
   "purpose": "First-party text/source and selected saved-artifact provenance for shared agent handoff; not a binary asset or third-party dependency audit.",
   "files": {
     "AGENTS.md": {
@@ -12,8 +12,8 @@
       "bytes": 5882
     },
     "README.md": {
-      "sha256": "c34279694e4e79c7f80ff7d933e3b4beba25d598af25520e9361db7e8c4f0fd3",
-      "bytes": 6242
+      "sha256": "a7f6dbe9940a212329d97de34fb74dbfda63e5d0cbdd58f65a2171c4057cdfed",
+      "bytes": 8169
     },
     "argon_env.py": {
       "sha256": "cc0cb15c84106ec2c796ff582f32ae3d7b7231dd1e7dd0ad7862a673c5239d78",
@@ -60,8 +60,8 @@
       "bytes": 2839
     },
     "docs/AGENT_CONTEXT.md": {
-      "sha256": "35f665705b9db02e03905bed67472602c14a00992cf5d0a82a355c226c20d6af",
-      "bytes": 12472
+      "sha256": "f9ecea7b0a20a5666208f281dd0fcf547845e06734cf6f2cb945a00b87fd4e64",
+      "bytes": 13274
     },
     "docs/calibration.md": {
       "sha256": "dbf84ae8f03bb224ae9d34f3ec8f19da2bd264906abbe84ec783659b45960fa1",
@@ -176,8 +176,8 @@
       "bytes": 102
     },
     "runs/live/state.json": {
-      "sha256": "ce1a8f247401233687b7bb2117ccad829be6970c23f36b2a9f98358c9cd55dae",
-      "bytes": 31789
+      "sha256": "bb4783a5568b35048b2a8ae9300b87a8860cdb3fb84efab776012faee7256cd0",
+      "bytes": 27220
     },
     "runs/memory_text/config.json": {
       "sha256": "2f69915c37e39289632e6042b778007a496eef445c0d2c48389ecbdda8038657",
@@ -246,6 +246,10 @@
     "smoke.py": {
       "sha256": "a54b123237fa7ecf60cbfc9bb1323c25850141c8fa47af75c78451cef72ef0d5",
       "bytes": 590
+    },
+    "submission/IMPLEMENTATION_QA.md": {
+      "sha256": "c85ebd54e6b465dc722ca7fe9fdebeb25b687c7f00c8e4797701c55c563098b1",
+      "bytes": 14131
     },
     "submission/PITCH_3_MIN.md": {
       "sha256": "71f0a6da3c7c8241b384dfecd7661fc7d8b1b3e16a6f09273508001f288ecf82",
